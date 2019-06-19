@@ -12,12 +12,14 @@
     "axios-mock-adapter": "^1.16.0",
     "core-js": "^2.6.5",
     "cryptico": "^1.0.2",
+    "jsencrypt": "^3.0.0-rc.1",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.4",
     "vue-router": "^3.0.3",
     "vuelidate": "^0.7.4",
     "vuetify": "^1.5.5",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "vuex-persistedstate": "^2.5.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.8.0",

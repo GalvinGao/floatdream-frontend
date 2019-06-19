@@ -6,6 +6,7 @@ import About from '@/views/About.vue'
 import Download from '@/views/Download.vue'
 import PublicLayout from '@/layouts/Public'
 import Login from '@/views/Login'
+import NotFound from '@/views/404'
 
 Vue.use(Router);
 
@@ -89,8 +90,32 @@ const router = new Router({
           meta: {
             requiresAuth: true
           }
+        },
+        {
+          path: 'settings',
+          components: {
+            dashboard: () => import(/* webpackChunkName: "dashboard" */'@/layouts/Settings.vue')
+          },
+          children: [{
+            path: 'nickname',
+            name: 'SettingsNickname',
+            components: {
+              settings: () => import(/* webpackChunkName: "dashboard" */'@/views/Dashboard/Settings/Nickname.vue')
+            },
+            meta: {
+              requiresAuth: true
+            }
+          }],
+          meta: {
+            requiresAuth: true
+          }
         }
       ]
+    },
+    {
+      path: '*',
+      name: '404 Not Found',
+      component: NotFound
     }
   ]
 });

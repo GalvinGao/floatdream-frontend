@@ -1,12 +1,10 @@
 import service from '@/utils/service'
+import qs from 'qs';
 
 export default {
-  getParams() {
-    return service.get('/auth/params')
-  },
   postCredentials(body) {
-    return service.post('/auth/validate', {
+    return service.post('/auth/validate', qs.stringify({
       payload: body
-    })
+    }))
   }
 }

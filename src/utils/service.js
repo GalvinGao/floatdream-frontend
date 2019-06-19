@@ -3,8 +3,7 @@ import MockAdapter from "axios-mock-adapter";
 import mocker from "./mocking";
 
 const service = axios.create({
-  baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:8090' : '',
-  withCredentials: true
+  baseURL: process.env.NODE_ENV === 'development' ? '' : 'http://localhost/api'
 });
 
 if (process.env.NODE_ENV === 'development') {

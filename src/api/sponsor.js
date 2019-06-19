@@ -1,7 +1,7 @@
 import service from '@/utils/service'
 
 export default {
-  postSponsorData () {
-    return service.post('/sponsor/')
+  newOrder (order) {
+    return service.post('/sponsor/order')
   }
 }

@@ -1,36 +1,35 @@
 <template>
-  <v-card
-    class="mx-auto"
-  >
-    <v-card
-      dark
-      flat
-    >
-      <v-btn
-        absolute
-        bottom
-        color="pink"
-        right
-        fab
-      >
-        <v-icon>close</v-icon>
-      </v-btn>
-      <v-parallax src="https://cdn.vuetifyjs.com/images/parallax/material.jpg" height="300" alt="Background"></v-parallax>
-      <v-container fill-height>
-        <v-layout align-center>
-          <v-flex xs12 md6 lg4 column>
-            <strong class="display-3 font-weight-regular mr-2">GalvinGao</strong>
-          </v-flex>
-          <v-flex xs12 md6 lg4 column>
-            <v-layout column justify-end>
-              <div class="headline font-weight-light">剩余 LB：1000</div>
-              <div class="text-uppercase font-weight-light">最近赞助日期：2019.8.7 10:33</div>
-            </v-layout>
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-card>
-  </v-card>
+  <v-container grid-list-lg text-xs-center>
+    <v-layout align-center justify-center fill-height row wrap>
+      <v-flex xs12 sm12 md12 lg8>
+        <v-card>
+          <v-card-title>
+            游戏 ID
+          </v-card-title>
+          <v-card-text>
+            <h1 class="display-2">GalvinGao</h1>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+    </v-layout>
+    <v-layout align-center justify-center fill-height row wrap>
+      <v-flex xs12 sm6 md6 lg4>
+        <v-card>
+          <v-card-title>
+            Card 1
+          </v-card-title>
+        </v-card>
+      </v-flex>
+      <v-flex xs12 sm6 md6 lg4>
+        <v-card>
+          <v-card-title>
+            Card 2
+          </v-card-title>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
+
 </template>
 
 <script>
