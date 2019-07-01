@@ -20,7 +20,7 @@ export default new Vuex.Store({
     }
   },
   plugins: [
-    //createPersistedState()
+    createPersistedState()
   ],
   mutations: {
     auth_begin (state) {
@@ -48,7 +48,7 @@ export default new Vuex.Store({
         commit('auth_begin');
         let encrypted = encryptor.encrypt(credentials);
 
-        auth.postCredentials(encrypted)
+        auth.login(encrypted)
           .then(({data}) => {
             console.log('credentials succeeded!', data);
             commit('auth_success', data);
@@ -61,7 +61,16 @@ export default new Vuex.Store({
       })
     },
     logout ({commit}) {
-      commit('auth_logout')
+      return new Promise((resolve, reject) => {
+        auth.logout()
+          .then(() => {
+            commit('auth_logout');
+            resolve()
+          })
+          .catch(err => {
+            reject(err)
+          })
+      })
     }
   },
   // getters: {

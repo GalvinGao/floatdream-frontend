@@ -1,10 +1,20 @@
 <template>
   <v-app id="app-inner">
+    <v-snackbar v-model="snackbar.enabled" color="error" :timeout="6000">
+      {{ snackbar.text }}
+      <v-btn
+        dark
+        flat
+        @click="snackbar.enabled = false"
+      >
+        关闭
+      </v-btn>
+    </v-snackbar>
     <v-navigation-drawer
       v-model="drawer"
       app
     >
-      <router-link :to="{'name': 'Home'}">
+      <router-link :to="{'name': 'Home'}" style="text-decoration: none">
         <div class="drawer-logo indigo darken-2 white--text">
           FloatDream
         </div>
@@ -22,7 +32,7 @@
 
         <v-list-tile :to="{'name': 'About'}">
           <v-list-tile-action>
-            <v-icon>people</v-icon>
+            <v-icon>mdi-account-group</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>关于我们</v-list-tile-title>
@@ -41,7 +51,7 @@
 
         <v-list-tile :to="{'name': 'Download'}">
           <v-list-tile-action>
-            <v-icon>cloud_download</v-icon>
+            <v-icon>mdi-download</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>下载</v-list-tile-title>
@@ -92,7 +102,7 @@
               <v-list-tile-title>更改昵称</v-list-tile-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-icon>account_box</v-icon>
+              <v-icon>mdi-account-details</v-icon>
             </v-list-tile-action>
           </v-list-tile>
 
@@ -107,10 +117,11 @@
       <span v-if="this.$store.state.auth.state === 'success'"
             @mouseover="authButtonHovered = true"
             @mouseleave="authButtonHovered = false">
-        <transition name="slide-x-reverse-transition" mode="out-in" duration="10">
+        <transition name="slide-x-reverse-transition" mode="out-in" duration="30">
           <v-btn
             @click="logout"
-            v-if="authButtonHovered"
+            v-if="authButtonHovered || authButtonLoggingOut"
+            :loading="authButtonLoggingOut"
             style="overflow: hidden"
             round
           >
@@ -125,6 +136,7 @@
       <span v-else>
         <v-btn round @click="redirectLogin"><v-icon left>exit_to_app</v-icon> 登录</v-btn>
       </span>
+
     </v-toolbar>
     <v-content>
       <transition name="slide-fade" mode="out-in">
@@ -134,9 +146,10 @@
     <v-footer color="indigo" class="pa-3" app>
       <span class="white--text" v-if="this.$vuetify.breakpoint.smAndUp">
         服务器状态：<v-icon dark
-                      small>{{ server.loading ? 'hourglass_full' : (server.operating ? 'done' : 'error') }}</v-icon>
-        {{ server.loading ? '获取中...' : (server.operating ? '正常' : '异常') }}
-        {{ server.loading ? '' : (server.operating ? `(ping: ${server.latency}ms)` : '') }}
+                      small>{{ server.loading ? 'mdi-lan-pending' : (server.operating ? 'mdi-lan-connect' : 'mdi-lan-disconnect') }}</v-icon>
+        {{ server.loading ? '获取中...' : (server.operating ? '正常' : '无法连接') }}
+        <v-icon dark small>{{ server.loading ? '' : (server.operating ? server.icon : '')}}</v-icon>
+        {{ server.loading ? '' : (server.operating ? `${server.latency}ms` : '') }}
       </span>
       <v-spacer></v-spacer>
       <span class="white--text">&copy; 2015-{{new Date().getFullYear()}} FloatDream</span>
@@ -153,10 +166,12 @@
     beforeMount() {
       status.get()
         .then(({data}) => {
+          let latencyRate = data.latency > 200 ? 1 : (5 - Math.ceil(data.latency / 60));
           this.server = {
             loading: false,
             operating: data.operating,
-            latency: data.latency
+            latency: data.latency,
+            icon: `mdi-network-strength-${latencyRate}`
           }
         })
     },
@@ -168,7 +183,12 @@
           operating: true,
           latency: -1
         },
-        authButtonHovered: false
+        authButtonHovered: false,
+        authButtonLoggingOut: false,
+        snackbar: {
+          enabled: false,
+          text: false
+        }
       }
     },
     methods: {
@@ -180,8 +200,20 @@
       },
       logout() {
         this.authButtonHovered = false;
-        this.$store.dispatch('logout');
-        this.$router.push({name: 'Login'})
+        this.authButtonLoggingOut = true;
+        this.$store.dispatch('logout')
+          .then(() => {
+            this.$router.push({name: 'Login'})
+          })
+          .catch(err => {
+            this.snackbar = {
+              enabled: true,
+              text: "无法登出：" + err
+            }
+          })
+          .finally(() => {
+            this.authButtonLoggingOut = false;
+          })
       }
     },
     computed: {}

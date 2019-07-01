@@ -46,7 +46,7 @@
 
 <script>
   import {validationMixin} from 'vuelidate'
-  import {required, helpers, minLength, maxLength, not, sameAs} from 'vuelidate/lib/validators'
+  import {required, helpers, minLength, maxLength} from 'vuelidate/lib/validators'
   import settings from '@/api/settings'
 
   const checkDuplication = (v, vm) => vm.$store.state.account.nickname !== v;
@@ -73,7 +73,8 @@
         text: '',
         color: ''
       },
-      loading: false
+      loading: false,
+      ajaxError: ''
     }),
 
     computed: {
@@ -84,6 +85,7 @@
         !this.$v.nickname.isValidCharacters && errors.push('“昵称” 不能以下划线（_）作为开头或结尾');
         (!this.$v.nickname.isValidMinLength || !this.$v.nickname.isValidMaxLength) && errors.push('“昵称” 须为 2-20 位英文字符或 2-6 位中文字符');
         !this.$v.nickname.isNotDuplicated && errors.push('“昵称” 不能与上一次设置的昵称一致');
+        this.ajaxError && errors.push(this.ajaxError);
         return errors
       }
     },
@@ -99,14 +101,16 @@
                 enabled: true,
                 text: '昵称修改成功',
                 color: 'success'
-              }
+              };
+              this.$v.nickname.$reset()
             })
             .catch((err) => {
               this.snackbar = {
                 enabled: true,
                 text: `昵称修改失败；错误信息：${err}`,
                 color: 'error'
-              }
+              };
+              this.ajaxError = err
             })
             .finally(() => {
               this.loading = false

@@ -3,6 +3,14 @@
     <div id="login-page--background"></div>
     <v-flex xs12 sm10 md8 lg6>
       <v-card class="transparent pa-3" id="login-page--card" elevation="12">
+        <v-alert
+          :value="this.reasonMessage"
+          type="info"
+          class="mb-3"
+        >
+          {{ this.reasonMessage }}
+        </v-alert>
+
         <v-form ref="form" lazy-validation @keyup.native.enter="submit" class="form">
           <v-container>
             <v-layout column>
@@ -83,7 +91,7 @@
         const errors = [];
         if (!this.$v.username.$dirty) return errors;
         !this.$v.username.required && errors.push('“玩家名” 为必填项');
-        !this.$v.username.isValidCharacters && errors.push('“玩家名” 不能以下划线（_）作为开头或结尾');
+        !this.$v.username.isValidCharacters && errors.push('“玩家名” 仅支持大小写字母、数字、所有中文字符及下划线（_）');
         (!this.$v.username.isValidMinLength || !this.$v.username.isValidMaxLength) && errors.push('“玩家名” 须为 2-20 位英文字符或 2-6 位中文字符');
         return errors
       },
@@ -93,6 +101,12 @@
         !this.$v.password.required && errors.push('“游戏密码” 为必填项');
         (!this.$v.password.isValidMinLength || !this.$v.password.isValidMaxLength) && errors.push('“游戏密码” 须为 2-20 位字符');
         return errors
+      },
+      reasonMessage() {
+        if (this.$route.query.reason === "sessionExpired") {
+          return "登录信息已过期。为了您的账户安全，请重新登录"
+        }
+        return ""
       }
     },
 

@@ -6,6 +6,15 @@ import App from './App.vue'
 // import mocker from './utils/mocking'
 import router from './router'
 import store from './store'
+import VueQrcode from '@chenfengyuan/vue-qrcode';
+import HelperOffset from '@/components/Offset'
+import Card from '@/components/Card'
+import StatsCard from '@/components/StatsCard'
+
+Vue.component('helper-offset', HelperOffset);
+Vue.component('card', Card);
+Vue.component('stats-card', StatsCard);
+Vue.component(VueQrcode.name, VueQrcode);
 
 Vue.config.productionTip = false;
 
