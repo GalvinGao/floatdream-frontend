@@ -6,6 +6,8 @@ import About from '@/views/About.vue'
 import Download from '@/views/Download.vue'
 import PublicLayout from '@/layouts/Public'
 import Login from '@/views/Login'
+import NotFound from '@/views/404.vue'
+import UnderConstruction from '@/components/Placeholders/UnderConstruction'
 
 Vue.use(Router);
 
@@ -50,9 +52,12 @@ const router = new Router({
         {
           path: '/forum',
           name: 'Forum',
-          beforeEnter: () => {
-            window.open('https://bbs.floatdream.cn', '_blank')
-          }
+          components: {
+            public: UnderConstruction
+          },
+          // beforeEnter: () => {
+          //   window.open('https://bbs.floatdream.cn', '_blank')
+          // }
         }
       ]
     },
@@ -71,10 +76,10 @@ const router = new Router({
           }
         },
         {
-          path: 'sponsor',
-          name: 'DashboardSponsor',
+          path: 'topup',
+          name: 'DashboardTopup',
           components: {
-            dashboard: () => import(/* webpackChunkName: "dashboard" */'@/views/Dashboard/Sponsor/Home.vue')
+            dashboard: () => import(/* webpackChunkName: "dashboard" */'@/views/Dashboard/Topup/Home.vue')
           },
           meta: {
             requiresAuth: true
@@ -114,7 +119,7 @@ const router = new Router({
     {
       path: '*',
       name: '404 Not Found',
-      component: () => import(/* webpackChunkName: "errors" */'@/views/404.vue')
+      component: NotFound
     }
   ]
 });

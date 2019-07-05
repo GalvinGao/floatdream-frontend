@@ -1,16 +1,19 @@
 <template>
   <section>
-    <VideoParallax />
+    <HeroVideo
+      heading="FloatDream"
+      subheading="一个很骚的服务器"
+    />
   </section>
 </template>
 
 <script>
-import VideoParallax from '@/components/VideoParallax'
+import HeroVideo from '@/components/HeroVideo'
 
 export default {
-  name: 'home',
+  name: 'Home',
   components: {
-    VideoParallax
+    HeroVideo
   }
 }
 </script>

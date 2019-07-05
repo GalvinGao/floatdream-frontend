@@ -15,12 +15,17 @@ function mocker(mock) {
 
   mock.onGet('/user/logout').reply(201);
 
-  mock.onPost('/sponsor/order').reply(200, {
+  mock.onGet('/topup/item').reply(200, {
+    name: 'Life 币',
+    ratio: 3
+  });
+
+  mock.onPost('/topup/order').reply(200, {
     orderId: 2019000000000001,
     qrContent: 'https://qr.alipay.com/FhfjiNFeihq9324nFh'
   });
 
-  mock.onGet('/sponsor/order/2019000000000001/status').reply(200, {
+  mock.onGet('/topup/order/2019000000000001/status').reply(200, {
     status: 'payed'
   });
 

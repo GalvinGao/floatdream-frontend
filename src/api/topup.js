@@ -3,12 +3,15 @@ import encryptor from "@/utils/encryptor";
 import qs from 'qs';
 
 export default {
+  getItem () {
+    return service.get('/topup/item')
+  },
   placeOrder (order) {
-    return service.post('/sponsor/order', qs.stringify({
+    return service.post('/topup/order', qs.stringify({
       payload: encryptor.encrypt(order)
     }))
   },
   checkOrder (orderId) {
-    return service.get(`/sponsor/order/${orderId}/status`)
+    return service.get(`/topup/order/${orderId}/status`)
   }
 }

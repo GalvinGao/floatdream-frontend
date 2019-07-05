@@ -9,7 +9,7 @@ const service = axios.create({
 
 if (process.env.NODE_ENV === 'development') {
   mocker(new MockAdapter(service, {
-    delayResponse: 800
+    delayResponse: 3000
   }));
 }
 

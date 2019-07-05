@@ -8,8 +8,8 @@
     </div>
     <v-layout justify-center align-center class="video-text-container" tag="header">
       <v-flex text-xs-center>
-        <h1 class="white--text mb-2 display-1 text-xs-center">FloatDream</h1>
-        <div class="white--text subheading mb-3 text-xs-center">一个很骚的服务器（？</div>
+        <h1 class="white--text mb-2 display-1 text-xs-center">{{ this.heading }}</h1>
+        <div class="white--text subheading mb-3 text-xs-center">{{ this.subheading }}</div>
       </v-flex>
     </v-layout>
   </v-layout>
@@ -17,7 +17,17 @@
 
 <script>
   export default {
-    name: "VideoParallax"
+    name: "HeroVideo",
+    props: {
+      heading: {
+        type: String,
+        default: ''
+      },
+      subheading: {
+        type: String,
+        default: ''
+      }
+    }
   }
 </script>
 

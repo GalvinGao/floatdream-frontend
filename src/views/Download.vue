@@ -1,5 +1,5 @@
 <template>
-  <v-layout justify-center align-center text-xs-center fill-height>
+  <v-layout justify-center align-center text-xs-center fill-height style="overflow: hidden">
     <div id="download-page--background"></div>
     <v-layout
       align-center

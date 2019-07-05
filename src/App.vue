@@ -79,9 +79,9 @@
             </v-list-tile-action>
           </v-list-tile>
 
-          <v-list-tile :to="{'name': 'DashboardSponsor'}">
+          <v-list-tile :to="{'name': 'DashboardTopup'}">
             <v-list-tile-content>
-              <v-list-tile-title>赞助</v-list-tile-title>
+              <v-list-tile-title>充值</v-list-tile-title>
             </v-list-tile-content>
             <v-list-tile-action>
               <v-icon>favorite_border</v-icon>
@@ -244,22 +244,22 @@
   }
 
   .slide-fade-enter-active {
-    transition: all 225ms cubic-bezier(0.0, 0.0, 0.2, 1);
+    transition: all 225ms cubic-bezier(0.165, 0.84, 0.44, 1);
   }
 
   .slide-fade-leave-active {
-    transition: all 275ms cubic-bezier(0.4, 0.0, 1, 1);
+    transition: all 175ms cubic-bezier(0.895, 0.03, 0.685, 0.22);
   }
 
   .slide-fade-enter {
-    transform: translateX(50px) scale(1);
+    transform: translateX(40px) scale(1);
     filter: blur(5px);
     opacity: 0;
   }
 
   .slide-fade-leave-to {
-    transform: scale(0.8);
-    filter: blur(5px);
+    transform: scale(0.9);
+    filter: blur(10px) saturate(0);
     opacity: 0;
   }
 

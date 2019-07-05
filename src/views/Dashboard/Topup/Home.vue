@@ -1,5 +1,5 @@
 <template>
-  <v-layout justify-center align-center fill-height id="sponsor-page">
+  <v-layout justify-center align-center fill-height>
     <v-snackbar v-model="snackbar.enabled" :color="snackbar.color" :timeout="6000">
       {{ snackbar.text }}
       <v-btn
@@ -14,7 +14,7 @@
       <v-container>
         <v-stepper v-model="stepNow" class="mx-auto" style="border-radius: 4px;">
           <v-stepper-header>
-            <v-stepper-step :editable="stepNow < 3" :complete="stepNow > 1" step="1">赞助</v-stepper-step>
+            <v-stepper-step :editable="stepNow < 3" :complete="stepNow > 1" step="1">充值</v-stepper-step>
             <v-divider></v-divider>
             <v-stepper-step :complete="stepNow > 2" step="2">确认信息</v-stepper-step>
             <v-divider></v-divider>
@@ -27,36 +27,23 @@
 
           <v-stepper-items>
             <v-stepper-content step="1">
-              <h1>赞助</h1>
+              <h1>充值</h1>
               <v-form ref="form" lazy-validation>
                 <v-container>
                   <v-layout column>
-                    <v-select
-                      v-model="category"
-                      label="赞助项"
-                      prepend-icon="list"
-                      required
-                      persistent-hint
-                      :hint="getCategoryHint()"
-
-                      :items="plainCategories"
-
-                      :error-messages="categoryErrors"
-                      @input="$v.category.$touch()"
-                      @blur="$v.category.$touch()"
-                    ></v-select>
-
                     <v-text-field
-                      v-model="amount"
+                      v-model="price"
                       label="金额"
                       prepend-icon="attach_money"
                       required
                       persistent-hint
-                      :hint="getAmountHint()"
+                      :hint="getPriceHint()"
 
-                      :error-messages="amountErrors"
-                      @input="$v.amount.$touch()"
-                      @blur="$v.amount.$touch()"
+                      :loading="itemLoading"
+
+                      :error-messages="priceErrors"
+                      @input="$v.price.$touch()"
+                      @blur="$v.price.$touch()"
                     ></v-text-field>
                   </v-layout>
                 </v-container>
@@ -89,13 +76,13 @@
                 type="info"
                 class="mt-3 mb-3"
               >
-                请在赞助前再三确认所有信息。我们将不予受理除系统故障外的其他任何退款申请，敬请谅解
+                请在充值前再三确认所有信息。我们将不予受理除系统故障外的其他任何退款申请，敬请谅解
               </v-alert>
 
               <v-card class="ml-1 mr-1 mt-3" elevation="4">
                 <v-card-title>
                   <v-flex xs12 class="ma-2">
-                    <h3>请确认您将为以下 FloatDream 账户进行赞助</h3>
+                    <h3>请确认您将为以下 FloatDream 账户进行充值</h3>
                   </v-flex>
                   <v-list>
                     <v-list-tile>
@@ -115,37 +102,7 @@
               <v-card class="ml-1 mr-1 mt-3" elevation="4">
                 <v-card-title>
                   <v-flex xs12 class="ma-2">
-                    <h3>请确认您将赞助以下项目</h3>
-                  </v-flex>
-                  <v-list>
-                    <v-list-tile>
-                      <v-list-tile-action>
-                        <v-icon color="indigo">shopping_cart</v-icon>
-                      </v-list-tile-action>
-
-                      <v-list-tile-content>
-                        <v-list-tile-title>{{ this.transaction.category.name }}</v-list-tile-title>
-                        <v-list-tile-sub-title>赞助项</v-list-tile-sub-title>
-                      </v-list-tile-content>
-                    </v-list-tile>
-
-                    <v-list-tile>
-                      <v-list-tile-action>
-                      </v-list-tile-action>
-
-                      <v-list-tile-content>
-                        <v-list-tile-title>{{ this.transaction.amount.display }} 个</v-list-tile-title>
-                        <v-list-tile-sub-title>数量</v-list-tile-sub-title>
-
-                      </v-list-tile-content>
-                    </v-list-tile>
-                  </v-list>
-                </v-card-title>
-              </v-card>
-              <v-card class="ml-1 mr-1 mt-3" elevation="4">
-                <v-card-title>
-                  <v-flex xs12 class="ma-2">
-                    <h3>请确认支付金额</h3>
+                    <h3>请确认充值金额</h3>
                   </v-flex>
                   <v-list>
                     <v-list-tile>
@@ -248,7 +205,7 @@
             </v-stepper-content>
 
             <v-stepper-content step="5">
-              <h1>赞助成功</h1>
+              <h1>充值成功</h1>
               <v-layout align-center justify-center row wrap class="my-4">
                 <v-flex xs12 sm2 md2 lg2 xl2>
                   <svg id="successAnimation" class="animated" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 70 70" style="max-height: 10vh; text-align: center">
@@ -258,13 +215,11 @@
                   </svg>
                 </v-flex>
                 <v-flex xs12 sm10 md10 lg10 xl10>
-                  <p class="mt-2">款项已收妥，你的赞助物品将很快被充值到账户中。感谢你对 FloatDream 的大力支持！</p>
+                  <p class="mt-2">款项已收妥，充值物品将很快被充值到对应游戏账户中。感谢你对 FloatDream 的大力支持！</p>
                 </v-flex>
               </v-layout>
             </v-stepper-content>
-
           </v-stepper-items>
-
         </v-stepper>
       </v-container>
     </v-flex>
@@ -274,19 +229,16 @@
 <script>
   import {validationMixin} from 'vuelidate'
   import {required, integer} from 'vuelidate/lib/validators'
-  import sponsor from '@/api/sponsor'
+  import topup from '@/api/topup'
 
   const positive = (value) => value > 0;
 
   export default {
-    name: "SponsorHome",
+    name: "TopupHome",
     mixins: [validationMixin],
 
     validations: {
-      category: {
-        required
-      },
-      amount: {
+      price: {
         required,
         integer,
         positive
@@ -296,20 +248,11 @@
     data() {
       return {
         stepNow: 1,
-        category: {
-          id: 'life',
-          name: 'Life 币',
-          description: 'Life 币是服务器通用货币',
-          ratio: 1 // 1 RMB = 1 Coin
+        itemLoading: true,
+        item: {
+          name: null,
+          ratio: null // 1 RMB = 1 Coin
         },
-        categories: [
-          {
-            id: 'life',
-            name: 'Life 币',
-            description: 'Life 币是服务器通用货币',
-            ratio: 1 // 1 RMB = 1 Coin
-          }
-        ],
         paymentMethods: [
           {
             id: 'alipay',
@@ -326,7 +269,7 @@
             icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 86.31 76.15" class="pa-1" style="height:40px"><path fill="#09bb07" d="M31.4 48.17a2.87 2.87 0 0 1-3.81-1.16l-.2-.41-7.85-17.24a1.5 1.5 0 0 1-.14-.61 1.44 1.44 0 0 1 2.3-1.15l9.27 6.6a4.28 4.28 0 0 0 3.84.44l43.6-19.41C70.59 6.02 57.72 0 43.16 0 19.32 0 0 16.1 0 35.96c0 10.84 5.81 20.6 14.91 27.19a2.87 2.87 0 0 1 1.21 2.34 3.42 3.42 0 0 1-.15.92l-1.95 7.25a4.23 4.23 0 0 0-.23 1.05 1.44 1.44 0 0 0 1.44 1.44 1.62 1.62 0 0 0 .83-.26l9.45-5.46a4.52 4.52 0 0 1 2.3-.66 4.33 4.33 0 0 1 1.26.19 51.05 51.05 0 0 0 14.09 1.97c23.83 0 43.15-16.1 43.15-35.97A31.13 31.13 0 0 0 81.4 19.3L31.7 47.99z"/></svg>'
           }
         ],
-        amount: null,
+        price: null,
         payment: {
           payMethod: {app: ''},  // 支付方式，现有 ["alipay", "wechat_pay"]
           submitting: false,  // 选择支付方式后，提交订单的过程
@@ -342,19 +285,40 @@
         dialog: false
       }
     },
+
+    mounted () {
+      this.fetchItem()
+    },
+
     methods: {
+      fetchItem() {
+        topup.getItem()
+          .then(({data}) => {
+            this.item.name = data.name;
+            this.item.ratio = data.ratio
+          })
+          .catch(err => {
+            this.snackbar = {
+              enabled: true,
+              text: '拉取充值兑换比率失败：' + err,
+              color: 'error'
+            }
+          })
+          .finally(() => {
+            this.itemLoading = false;
+          })
+      },
+
       submitOrder (method) {
         this.payment.payMethod = method;
         let order = {
-          item: this.transaction.category.id,
-          amount: this.transaction.amount.value,
           price: this.transaction.price.value,
           pay: this.payment.payMethod.id
         };
         console.log('placing order', order);
         this.payment.submitting = true;
 
-        sponsor.placeOrder(order)
+        topup.placeOrder(order)
           .then(({data}) => {
             this.payment.orderId = data.orderId;
             this.payment.qrContent = data.qrContent;
@@ -375,7 +339,7 @@
       },
       checkOrder () {
         this.payment.checking = true;
-        sponsor.checkOrder(this.payment.orderId)
+        topup.checkOrder(this.payment.orderId)
           .then(({data}) => {
             if (data.status && data.status === 'payed') {
               this.dialog = false;
@@ -383,7 +347,7 @@
             } else {
               this.snackbar = {
                 enabled: true,
-                text: '赞助失败：' + data.status,
+                text: '充值失败：' + data.status,
                 color: 'error'
               }
             }
@@ -391,7 +355,7 @@
           .catch (err => {
             this.snackbar = {
               enabled: true,
-              text: '赞助失败：' + err,
+              text: '充值失败：' + err,
               color: 'error'
             }
           })
@@ -399,22 +363,13 @@
             this.payment.checking = false;
           })
       },
-      getCurrentSelectedCategory() {
-        return this.categories.filter(category => category.name === this.category)[0] || {}
-      },
-      getCategoryHint() {
-        if (this.category) {
-          // return `${category.description}；兑换比率 RMB 1 = ${category.ratio} ${category.name}`
-          return this.transaction.category.description
-        }
-        return ''
-      },
-      getAmountHint() {
-        if (this.amount && !this.category) {
-          return '选择赞助项以查看兑换比率'
-        }
-        if (this.amount && this.category) {
-          return `RMB ${this.transaction.price.display} 将可兑换 ${this.transaction.amount.display} 个 ${this.transaction.category.name}`
+      getPriceHint() {
+        if (this.itemLoading) {
+          return '正在获取兑换比率....'
+        } else if (this.price) {
+          return `RMB ${this.transaction.price.display} 将可兑换 ${this.transaction.estimatedAmount.display} 个 ${this.item.name}`
+        } else {
+          return null
         }
       },
       isFormValid() {
@@ -422,9 +377,6 @@
       },
       addSeparator(n) {
         return parseInt(n).toLocaleString()
-      },
-      redirectDashboard() {
-        this.$router.push({name: 'Dashboard', props: {refreshProfile: true}})
       },
       jumpAppPayment() {
         window.open(this.payment.qrContent);
@@ -437,40 +389,24 @@
       }
     },
     computed: {
-      plainCategories() {
-        let tempArray = [];
-        for (let category of this.categories) {
-          tempArray.push(category.name)
-        }
-        return tempArray
-      },
-      categoryErrors() {
+      priceErrors() {
         const errors = [];
-        if (!this.$v.category.$dirty) return errors;
-        !this.$v.category.required && errors.push('“赞助项” 为必填项');
-        return errors
-      },
-      amountErrors() {
-        const errors = [];
-        if (!this.$v.amount.$dirty) return errors;
-        !this.$v.amount.required && errors.push('“金额” 为必填项');
-        !this.$v.amount.integer && errors.push('“金额” 必须为整数');
-        !this.$v.amount.positive && errors.push('“金额” 必须为非零正数');
+        if (!this.$v.price.$dirty) return errors;
+        !this.$v.price.required && errors.push('“金额” 为必填项');
+        !this.$v.price.integer && errors.push('“金额” 必须为整数');
+        !this.$v.price.positive && errors.push('“金额” 必须为非零正整数');
         return errors
       },
       transaction () {
-        let selectedCategory = this.getCurrentSelectedCategory();
-        let price = parseInt(this.amount);
-        let amount = price * selectedCategory.ratio;
+        let estimatedAmount = this.item.ratio ? this.price * this.item.ratio : -1;
         return {
-          category: selectedCategory,
-          amount: {
-            display: this.addSeparator(amount),
-            value: amount
-          },
           price: {
-            display: parseFloat(this.amount).toFixed(2),
-            value: price
+            display: this.addSeparator(this.price),
+            value: this.price
+          },
+          estimatedAmount: {
+            display: estimatedAmount === -1 ? '加载中' : this.addSeparator(estimatedAmount),
+            value: estimatedAmount
           }
         }
       }
@@ -479,13 +415,6 @@
 </script>
 
 <style scoped>
-  #sponsor-page {
-    background: radial-gradient(ellipse at center, #5989df 0%, #1c1c36 100%);
-    background: url('../../../assets/background/2.png') 0 0 / cover fixed;
-    -webkit-background-size: auto 100%;
-    background-size: auto 100%;
-  }
-
   .v-stepper {
     background: transparent;
   }

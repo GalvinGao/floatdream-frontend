@@ -1,5 +1,5 @@
 <template>
-  <v-layout justify-center align-center fill-height>
+  <v-layout justify-center align-center fill-height style="overflow: hidden">
     <div id="login-page--background"></div>
     <v-flex xs12 sm10 md8 lg6>
       <v-card class="transparent pa-3" id="login-page--card" elevation="12">
@@ -24,6 +24,8 @@
                 box
                 dark
 
+                browser-autocomplete="username"
+
                 @input="$v.username.$touch()"
                 @blur="$v.username.$touch()"
               ></v-text-field>
@@ -37,6 +39,8 @@
                 clearable
                 box
                 dark
+
+                browser-autocomplete="current-password"
 
                 @input="$v.password.$touch()"
                 @blur="$v.password.$touch()"
