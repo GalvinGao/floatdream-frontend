@@ -1,6 +1,16 @@
 <template>
   <v-layout justify-center align-center fill-height style="overflow: hidden">
     <div id="login-page--background"></div>
+    <v-snackbar v-model="snackbar.enabled" :color="snackbar.color" :timeout="3000">
+      {{ snackbar.text }}
+      <v-btn
+          dark
+          flat
+          @click="snackbar.enabled = false"
+      >
+        关闭
+      </v-btn>
+    </v-snackbar>
     <v-flex xs12 sm10 md8 lg6>
       <v-card class="transparent pa-3" id="login-page--card" elevation="12">
         <v-alert
@@ -87,7 +97,12 @@
 
     data: () => ({
       username: '',
-      password: ''
+      password: '',
+      snackbar: {
+        enabled: false,
+        text: '',
+        color: ''
+      },
     }),
 
     computed: {
@@ -128,9 +143,19 @@
               } else {
                 this.$router.push({name: 'Dashboard'})
               }
+
+              this.snackbar = {
+                enabled: true,
+                text: `登录成功：欢迎回来，${this.username}`,
+                color: 'success'
+              }
             })
             .catch((error) => {
-              console.error('error with', error)
+              this.snackbar = {
+                enabled: true,
+                text: `登录失败：${error.responseMessage}`,
+                color: 'error'
+              }
             })
         }
       }

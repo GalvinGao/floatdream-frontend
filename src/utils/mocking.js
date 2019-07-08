@@ -29,11 +29,13 @@ function mocker(mock) {
     status: 'payed'
   });
 
-  // mock.onPost('/auth/validate').reply(401, {
+  // mock.onPost('/user/validate').reply(401, {
   //   code: 444
   // });
 
   mock.onPost('/settings/nickname').reply(201)
+
+  console.log("this")
 
   //mock.onGet('/')
 }

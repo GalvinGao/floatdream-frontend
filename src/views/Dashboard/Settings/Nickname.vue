@@ -106,7 +106,7 @@
             .catch((err) => {
               this.snackbar = {
                 enabled: true,
-                text: `昵称修改失败；错误信息：${err}`,
+                text: `昵称修改失败；错误信息：${err.responseMessage}`,
                 color: 'error'
               };
               this.ajaxError = err

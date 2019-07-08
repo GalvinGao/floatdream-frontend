@@ -8,6 +8,9 @@ export default {
     }))
   },
   logout() {
-    return service.get('/user/logout')
+    return service.post('/user/logout')
+  },
+  inspect() {
+    return service.get('/user/info')
   }
 }

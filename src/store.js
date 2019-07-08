@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import auth from '@/api/auth'
+import user from '@/api/user'
 import encryptor from '@/utils/encryptor'
 import createPersistedState from 'vuex-persistedstate'
 
@@ -48,7 +48,7 @@ export default new Vuex.Store({
         commit('auth_begin');
         let encrypted = encryptor.encrypt(credentials);
 
-        auth.login(encrypted)
+        user.login(encrypted)
           .then(({data}) => {
             console.log('credentials succeeded!', data);
             commit('auth_success', data);
@@ -56,26 +56,19 @@ export default new Vuex.Store({
           })
           .catch(err => {
             commit('auth_error');
-            reject('get params error', err)
+            reject(err)
           })
       })
     },
     logout ({commit}) {
-      return new Promise((resolve, reject) => {
-        auth.logout()
-          .then(() => {
-            commit('auth_logout');
-            resolve()
-          })
-          .catch(err => {
-            reject(err)
-          })
-      })
+      commit('auth_logout');
+      return user.logout()
     }
   },
-  // getters: {
-  //   isLoggedIn: state => state.auth.status === 'success',
-  //   authStatus: state => state.auth.status,
-  //   authedUsername: state => state.auth.username
-  // }
+  getters: {
+  //   isLoggedIn: state => state.user.status === 'success',
+  //   authStatus: state => state.user.status,
+  //   authedUsername: state => state.user.username
+    authorizationHeaders : state => `Bearer ${state.auth.token}`
+  }
 })

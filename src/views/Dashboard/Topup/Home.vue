@@ -44,6 +44,8 @@
                       :error-messages="priceErrors"
                       @input="$v.price.$touch()"
                       @blur="$v.price.$touch()"
+
+                      @keypress.enter.prevent="isFormValid() ? stepNow = 2 : null"
                     ></v-text-field>
                   </v-layout>
                 </v-container>
@@ -262,7 +264,7 @@
             icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52.36 52.11" style="height:40px"><defs><clipPath id="a"><path fill="none" d="M4.82 4.77h43v43h-43z"/></clipPath><clipPath id="b"><path fill="none" d="M16.73 37.56c-6.2 0-7.17-3.9-6.84-5.51s2.12-3.73 5.56-3.73A25.92 25.92 0 0 1 27.2 31.4c-2.99 3.86-6.66 6.17-10.47 6.17m30.63-3.73V13.1A8.12 8.12 0 0 0 39.21 5H13.15A8.12 8.12 0 0 0 5 13.1V39a8.12 8.12 0 0 0 8.15 8.1H39.2a8.14 8.14 0 0 0 8.02-6.67 600.2 600.2 0 0 1-16.4-7.26c-3.7 4.47-7.6 7.15-13.45 7.15-5.86 0-9.77-3.58-9.3-7.98.3-2.88 2.3-7.59 10.93-6.78 4.55.43 6.64 1.27 10.35 2.49a29.05 29.05 0 0 0 2.36-5.73H15.26v-1.62h8.14V17.8h-9.93V16h9.93v-4.2a.8.8 0 0 1 .83-.66h4.07v4.86h10.59v1.79h-10.6v2.91h8.64a32.94 32.94 0 0 1-3.5 8.75c2.51.9 13.93 4.37 13.93 4.37" clip-rule="evenodd"/></clipPath></defs><g clip-path="url(#b)"><path fill="#00a0e8" d="M0 0h52.36v52.11H0z"/></g></svg>'
           },
           {
-            id: 'wechat_pay',
+            id: 'native',
             name: '微信支付',
             app: '微信',
             mobileDisabled: true,
@@ -294,13 +296,12 @@
       fetchItem() {
         topup.getItem()
           .then(({data}) => {
-            this.item.name = data.name;
             this.item.ratio = data.ratio
           })
           .catch(err => {
             this.snackbar = {
               enabled: true,
-              text: '拉取充值兑换比率失败：' + err,
+              text: '拉取充值兑换比率失败：' + err.responseMessage,
               color: 'error'
             }
           })
@@ -308,12 +309,11 @@
             this.itemLoading = false;
           })
       },
-
       submitOrder (method) {
         this.payment.payMethod = method;
         let order = {
           price: this.transaction.price.value,
-          pay: this.payment.payMethod.id
+          payment: this.payment.payMethod.id
         };
         console.log('placing order', order);
         this.payment.submitting = true;
@@ -329,33 +329,43 @@
           .catch((err) => {
             this.snackbar = {
               enabled: true,
-              text: "创建订单失败：" + err,
+              text: "创建订单失败：" + err.responseMessage,
               color: 'error'
             }
           })
           .finally(() => {
             this.payment.submitting = false
           })
+        console.log(this)
       },
       checkOrder () {
         this.payment.checking = true;
         topup.checkOrder(this.payment.orderId)
           .then(({data}) => {
-            if (data.status && data.status === 'payed') {
+            if (data.paid_time) {
+              let paidAt = Date.parse(data.paid_time);
+              if (paidAt) {
+                this.snackbar = {
+                  enabled: true,
+                  text: `充值成功：已收款 ${data.paid_price} 元`,
+                  color: 'success'
+                }
+              }
+
               this.dialog = false;
               this.stepNow += 1;
             } else {
               this.snackbar = {
                 enabled: true,
-                text: '充值失败：' + data.status,
-                color: 'error'
+                text: '暂未收到付款确认，请稍后重试',
+                color: 'warning'
               }
             }
           })
           .catch (err => {
             this.snackbar = {
               enabled: true,
-              text: '充值失败：' + err,
+              text: '充值失败：' + err.responseMessage,
               color: 'error'
             }
           })
@@ -367,7 +377,7 @@
         if (this.itemLoading) {
           return '正在获取兑换比率....'
         } else if (this.price) {
-          return `RMB ${this.transaction.price.display} 将可兑换 ${this.transaction.estimatedAmount.display} 个 ${this.item.name}`
+          return `RMB ${this.transaction.price.display} 将可兑换 ${this.transaction.estimatedAmount.display} 个 Life 币`
         } else {
           return null
         }
