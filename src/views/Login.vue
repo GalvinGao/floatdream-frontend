@@ -21,7 +21,7 @@
           {{ this.reasonMessage }}
         </v-alert>
 
-        <v-form ref="form" lazy-validation @keyup.native.enter="submit" class="form">
+        <v-form ref="form" lazy-validation @keyup.native.enter="executeCaptcha" class="form">
           <v-container>
             <v-layout column>
               <h1 style="z-index: 2" class="mb-5 white--text">登录</h1>
@@ -60,11 +60,20 @@
         </v-form>
         <v-card-actions>
           <v-layout justify-end>
-            <v-btn large color="primary" @click="submit"
-                   :loading="this.$store.state.auth.state === 'loading'"
-                   :disabled="this.$v.$invalid || this.$store.state.auth.state === 'success' ||
-                   this.$store.state.auth.state === 'loading'">提交
-            </v-btn>
+            <vue-recaptcha sitekey="6Lceo6wUAAAAAMJaTYmEXnjyicUcuUu3a2xMtAYr"
+                           :loadRecaptchaScript="true"
+                           recaptchaHost="www.recaptcha.net"
+                           ref="recaptcha"
+
+                           @verify="onVerify">
+              <v-btn large
+                     color="primary"
+                     @click="solvingCaptcha = true"
+                     :loading="this.$store.state.auth.state === 'loading' || solvingCaptcha"
+                     :disabled="this.$v.$invalid || this.$store.state.auth.state === 'success' ||
+                   this.$store.state.auth.state === 'loading' || solvingCaptcha">提交
+              </v-btn>
+            </vue-recaptcha>
           </v-layout>
         </v-card-actions>
       </v-card>
@@ -73,6 +82,7 @@
 </template>
 
 <script>
+  import VueRecaptcha from 'vue-recaptcha';
   import {validationMixin} from 'vuelidate'
   import {required, helpers, minLength, maxLength} from 'vuelidate/lib/validators'
 
@@ -80,6 +90,10 @@
     name: "Login",
 
     mixins: [validationMixin],
+
+    components: {
+      VueRecaptcha
+    },
 
     validations: {
       username: {
@@ -103,6 +117,7 @@
         text: '',
         color: ''
       },
+      solvingCaptcha: false
     }),
 
     computed: {
@@ -124,18 +139,28 @@
       reasonMessage() {
         if (this.$route.query.reason === "sessionExpired") {
           return "登录信息已过期。为了您的账户安全，请重新登录"
+        } else if (this.$route.query.reason === "authorizationFailed") {
+          return "鉴权失败。为了您的账户安全，请重新登录"
         }
         return ""
       }
     },
 
     methods: {
-      submit() {
+      executeCaptcha() {
+        this.$v.$touch();
+        if (!this.$v.$invalid) {
+          this.solvingCaptcha = true
+          this.$refs.recaptcha.execute()
+        }
+      },
+      onVerify(recaptchaResponse) {
         this.$v.$touch();
         if (!this.$v.$invalid) {
           this.$store.dispatch('login', {
             username: this.username,
-            password: this.password
+            password: this.password,
+            recaptcha: recaptchaResponse
           })
             .then(() => {
               if (this.$route.query.redirect) {
@@ -155,7 +180,11 @@
                 enabled: true,
                 text: `登录失败：${error.responseMessage}`,
                 color: 'error'
-              }
+              };
+              this.$refs.recaptcha.reset()
+            })
+            .finally(() => {
+              this.solvingCaptcha = false;
             })
         }
       }

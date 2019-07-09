@@ -46,9 +46,9 @@ export default new Vuex.Store({
     login ({commit}, credentials) {
       return new Promise((resolve, reject) => {
         commit('auth_begin');
-        let encrypted = encryptor.encrypt(credentials);
+        console.log("credentials", credentials);
 
-        user.login(encrypted)
+        user.login(credentials)
           .then(({data}) => {
             console.log('credentials succeeded!', data);
             commit('auth_success', data);

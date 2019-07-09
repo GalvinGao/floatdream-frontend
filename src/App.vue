@@ -202,16 +202,14 @@
         this.authButtonHovered = false;
         this.authButtonLoggingOut = true;
         this.$store.dispatch('logout')
-          .then(() => {
-            this.$router.push({name: 'Login'})
-          })
           .catch(err => {
             this.snackbar = {
               enabled: true,
-              text: "无法登出：" + err
+              text: "登出请求失败：" + err
             }
           })
           .finally(() => {
+            this.$router.push({name: 'Login'});
             this.authButtonLoggingOut = false;
           })
       }

@@ -32,9 +32,13 @@ service.interceptors.response.use(response => {
   return response;
 }, function (error) {
   if (error.response && error.response.status === 426) {
+    store.commit('auth_logout');
     return router.push({name: 'Login', query: {reason: 'sessionExpired'}})
+  } else if(error.response && error.response.status === 401) {
+    store.commit('auth_logout');
+    return router.push({name: 'Login', query: {reason: 'authorizationFailed'}})
   }
-  error.responseMessage = error.response.data.message || `${error.response.message} (http-${error.statusCode})`;
+  error.responseMessage = error.response.data.message || `${error.message} (http-${error.statusCode})`;
   // Do something with response error
   return Promise.reject(error);
 });

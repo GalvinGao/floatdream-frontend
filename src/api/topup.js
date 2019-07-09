@@ -7,9 +7,7 @@ export default {
     return service.get('/topup/item')
   },
   placeOrder (order) {
-    return service.post('/topup/order', qs.stringify({
-      payload: encryptor.encrypt(order)
-    }))
+    return service.post('/topup/order', order)
   },
   checkOrder (orderId) {
     return service.get(`/topup/order/${orderId}/status`)

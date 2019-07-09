@@ -628,6 +628,13 @@
     cssnano-preset-default "^4.0.0"
     postcss "^7.0.0"
 
+"@lsqswl/rsaencrypt@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@lsqswl/rsaencrypt/-/rsaencrypt-1.0.3.tgz#f822bd423e995049214d492af1a700186bc6355b"
+  integrity sha512-FBl+bN58IOEBXH8g/Bh43/Q8AZYU8WppGvVCett8tZx5PZq2xrAfjpjtijQbmTfP//8wSLQ4DbCHJ9zcX6bsMg==
+  dependencies:
+    jsencrypt "^3.0.0-rc.1"
+
 "@mdi/font@^3.7.95":
   version "3.7.95"
   resolved "https://registry.npm.taobao.org/@mdi/font/download/@mdi/font-3.7.95.tgz#86f783bdef3d985e14ce1345433477cade15fd6d"
@@ -7248,6 +7255,11 @@ vue-loader@^15.7.0:
     loader-utils "^1.1.0"
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
+
+vue-recaptcha@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/vue-recaptcha/-/vue-recaptcha-1.2.0.tgz#a30ab08b4c79326d2e3ab1c1e76c367e02e6eb35"
+  integrity sha512-zgt8bAmlHbLT2XY0diwA/UgGcbp1cOYXJ8za17WM1zlOC8EiO0mpGvYzXaR1aeU0gaiv1qLO6GOUwQVVAjgwMw==
 
 vue-router@^3.0.3:
   version "3.0.6"
