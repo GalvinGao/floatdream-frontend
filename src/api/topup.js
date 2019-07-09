@@ -1,6 +1,4 @@
 import service from '@/utils/service'
-import encryptor from "@/utils/encryptor";
-import qs from 'qs';
 
 export default {
   getItem () {

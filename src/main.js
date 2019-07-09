@@ -10,6 +10,13 @@ import VueQrcode from '@chenfengyuan/vue-qrcode';
 import HelperOffset from '@/components/Offset'
 import Card from '@/components/Card'
 import StatsCard from '@/components/StatsCard'
+import * as Sentry from '@sentry/browser';
+import * as Integrations from '@sentry/integrations';
+
+Sentry.init({
+  dsn: 'https://4958c96c26804f52bf7d9693e94a85a6@sentry.io/1499984',
+  integrations: [new Integrations.Vue({Vue, attachProps: true})],
+});
 
 Vue.component('helper-offset', HelperOffset);
 Vue.component('card', Card);

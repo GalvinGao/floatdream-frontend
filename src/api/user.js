@@ -1,5 +1,4 @@
 import service from '@/utils/service'
-import qs from 'qs';
 
 export default {
   login(body) {

@@ -49,7 +49,7 @@
             color="orange"
             icon="account_balance"
             title="Life 币"
-            :value="balance.current"
+            :value="balance.current.toLocaleString()"
             small-value="LB"
 
             sub-icon="mdi-calendar"

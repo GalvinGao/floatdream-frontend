@@ -166,12 +166,21 @@
     beforeMount() {
       status.get()
         .then(({data}) => {
-          let latencyRate = data.latency > 200 ? 1 : (5 - Math.ceil(data.latency / 60));
+          let latency = (data.latency / Math.pow(10, 6)).toPrecision(3);
+          let latencyRate = latency > 200 ? 1 : (5 - Math.ceil(latency / 60));
           this.server = {
             loading: false,
             operating: data.operating,
-            latency: data.latency,
+            latency: latency,
             icon: `mdi-network-strength-${latencyRate}`
+          }
+        })
+        .catch(() => {
+          this.server = {
+            loading: false,
+            operating: false,
+            latency: null,
+            icon: null
           }
         })
     },

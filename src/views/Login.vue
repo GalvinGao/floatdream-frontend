@@ -226,3 +226,9 @@
     text-shadow: 1px 1px 2px rgba(0, 0, 0, .3);
   }
 </style>
+
+<style>
+  .grecaptcha-badge {
+    bottom: 45px !important;
+  }
+</style>

@@ -5,7 +5,7 @@ import router from '@/router';
 import store from '@/store';
 
 const service = axios.create({
-  baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:8085/api' : ''
+  baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:8085/api' : '/api'
 });
 
 if (process.env.NODE_ENV === 'development') {
