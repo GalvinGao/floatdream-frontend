@@ -49,11 +49,11 @@
             color="orange"
             icon="account_balance"
             title="Life 币"
-            :value="balance.current.toLocaleString()"
+            :value="balance.current ? balance.current.toString() : '加载中...'"
             small-value="LB"
 
             sub-icon="mdi-calendar"
-            :sub-text="'最后充值：' + (balance.lastTopup ? balance.lastTopup : '从未')"
+            :sub-text="'最后充值：' + (balance.lastTopup ? formatTime(balance.lastTopup) : '从未')"
 
             action-text="充值"
             :action-to="{name: 'DashboardTopup'}"
@@ -159,7 +159,16 @@
           })
       },
       formatTime(time) {
-        return new Date(Date.parse(time)).toLocaleString()
+        let t = this.$moment(time);
+        let formatted;
+        if (t.isSame(new Date(), "year") || t.isSame(new Date(), "month")) {
+          formatted = t.format("M.D H:mm")
+        } else if (t.isSame(new Date(), "day")) {
+          formatted = t.format("今天 H:mm")
+        } else {
+          formatted = t.format("Y.M.D H:mm")
+        }
+        return `${t.fromNow()} (${formatted})`
       }
     }
   }

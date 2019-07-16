@@ -1,23 +1,19 @@
 <template>
-  <v-layout fill-height id="background">
+  <v-layout fill-height>
+    <BackgroundCarousel :interval="15" />
     <transition name="slide-fade" mode="out-in" duration="175">
-      <router-view name="dashboard"/>
+      <router-view name="dashboard" style="z-index: 5"/>
     </transition>
   </v-layout>
 
 </template>
 
 <script>
+  import BackgroundCarousel from '@/components/BackgroundCarousel'
   export default {
-    name: "DashboardLayout"
+    name: "DashboardLayout",
+    components: {
+      BackgroundCarousel
+    }
   }
 </script>
-
-<style scoped>
-  #background {
-    background: radial-gradient(ellipse at center, #5989df 0%, #1c1c36 100%);
-    background: url('../assets/background/1.png') 0 0 / cover fixed;
-    -webkit-background-size: auto 100%;
-    background-size: auto 100%;
-  }
-</style>

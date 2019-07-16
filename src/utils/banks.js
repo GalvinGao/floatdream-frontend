@@ -1,0 +1,681 @@
+export default {banks: [{
+  "id": "ICBC",
+  "name": "工商银行",
+  "icon": true
+}, {
+  "id": "ABC",
+  "name": "农业银行",
+  "icon": true
+}, {
+  "id": "PSBC",
+  "name": "邮政储蓄银行",
+  "icon": true
+}, {
+  "id": "CCB",
+  "name": "建设银行",
+  "icon": true
+}, {
+  "id": "CMB",
+  "name": "招商银行",
+  "icon": true
+}, {
+  "id": "BOC",
+  "name": "中国银行",
+  "icon": true
+}, {
+  "id": "COMM",
+  "name": "交通银行",
+  "icon": true
+}, {
+  "id": "SPDB",
+  "name": "浦发银行",
+  "icon": true
+}, {
+  "id": "GDB",
+  "name": "广发银行",
+  "icon": true
+}, {
+  "id": "CMBC",
+  "name": "民生银行",
+  "icon": true
+}, {
+  "id": "PAB",
+  "name": "平安银行",
+  "icon": true
+}, {
+  "id": "CEB",
+  "name": "光大银行",
+  "icon": true
+}, {
+  "id": "CIB",
+  "name": "兴业银行",
+  "icon": true
+}, {
+  "id": "CITIC",
+  "name": "中信银行",
+  "icon": true
+}, {
+  "id": "BOSH",
+  "name": "上海银行",
+  "icon": true
+}, {
+  "id": "CRB",
+  "name": "华润银行",
+  "icon": false
+}, {
+  "id": "HZB",
+  "name": "杭州银行",
+  "icon": false
+}, {
+  "id": "BSB",
+  "name": "包商银行",
+  "icon": false
+}, {
+  "id": "CQB",
+  "name": "重庆银行",
+  "icon": false
+}, {
+  "id": "SDEB",
+  "name": "顺德农商行",
+  "icon": false
+}, {
+  "id": "SZRCB",
+  "name": "深圳农商银行",
+  "icon": false
+}, {
+  "id": "HRBB",
+  "name": "哈尔滨银行",
+  "icon": false
+}, {
+  "id": "BOCD",
+  "name": "成都银行",
+  "icon": false
+}, {
+  "id": "GDNYB",
+  "name": "南粤银行",
+  "icon": false
+}, {
+  "id": "GZCB",
+  "name": "广州银行",
+  "icon": false
+}, {
+  "id": "JSB",
+  "name": "江苏银行",
+  "icon": false
+}, {
+  "id": "NBCB",
+  "name": "宁波银行",
+  "icon": false
+}, {
+  "id": "NJCB",
+  "name": "南京银行",
+  "icon": false
+}, {
+  "id": "QHNX",
+  "name": "青海农信",
+  "icon": false
+}, {
+  "id": "ORDOSB",
+  "name": "鄂尔多斯银行",
+  "icon": false
+}, {
+  "id": "BJRCB",
+  "name": "北京农商行",
+  "icon": false
+}, {
+  "id": "BHB",
+  "name": "河北银行",
+  "icon": false
+}, {
+  "id": "BGZB",
+  "name": "贵州银行",
+  "icon": false
+}, {
+  "id": "BEEB",
+  "name": "鄞州银行",
+  "icon": false
+}, {
+  "id": "PZHCCB",
+  "name": "攀枝花银行",
+  "icon": false
+}, {
+  "id": "QDCCB",
+  "name": "青岛银行",
+  "icon": false
+}, {
+  "id": "SHINHAN",
+  "name": "新韩银行",
+  "icon": false
+}, {
+  "id": "QLB",
+  "name": "齐鲁银行",
+  "icon": false
+}, {
+  "id": "QSB",
+  "name": "齐商银行",
+  "icon": false
+}, {
+  "id": "ZZB",
+  "name": "郑州银行",
+  "icon": false
+}, {
+  "id": "CCAB",
+  "name": "长安银行",
+  "icon": false
+}, {
+  "id": "RZB",
+  "name": "日照银行",
+  "icon": false
+}, {
+  "id": "SCNX",
+  "name": "四川农信",
+  "icon": false
+}, {
+  "id": "SDRCU",
+  "name": "山东农信",
+  "icon": false
+}, {
+  "id": "BCZ",
+  "name": "沧州银行",
+  "icon": false
+}, {
+  "id": "SJB",
+  "name": "盛京银行",
+  "icon": true
+}, {
+  "id": "LNNX",
+  "name": "辽宁农信",
+  "icon": false
+}, {
+  "id": "JUFENGB",
+  "name": "临朐聚丰村镇银行",
+  "icon": false
+}, {
+  "id": "JXNXB",
+  "name": "江西农信",
+  "icon": false
+}, {
+  "id": "JZB",
+  "name": "晋中银行",
+  "icon": false
+}, {
+  "id": "JZCB",
+  "name": "锦州银行",
+  "icon": false
+}, {
+  "id": "KLB",
+  "name": "昆仑银行",
+  "icon": false
+}, {
+  "id": "KRCB",
+  "name": "昆山农商",
+  "icon": false
+}, {
+  "id": "KUERLECB",
+  "name": "库尔勒市商业银行",
+  "icon": false
+}, {
+  "id": "LJB",
+  "name": "龙江银行",
+  "icon": false
+}, {
+  "id": "NYCCB",
+  "name": "南阳村镇银行",
+  "icon": false
+}, {
+  "id": "LSCCB",
+  "name": "乐山市商业银行",
+  "icon": false
+}, {
+  "id": "LUZB",
+  "name": "柳州银行",
+  "icon": false
+}, {
+  "id": "LWB",
+  "name": "莱商银行",
+  "icon": false
+}, {
+  "id": "LYYHB",
+  "name": "辽阳银行",
+  "icon": false
+}, {
+  "id": "LZB",
+  "name": "兰州银行",
+  "icon": false
+}, {
+  "id": "MINTAIB",
+  "name": "民泰银行",
+  "icon": false
+}, {
+  "id": "NCB",
+  "name": "宁波通商银行",
+  "icon": false
+}, {
+  "id": "NMGNX",
+  "name": "内蒙古农信",
+  "icon": false
+}, {
+  "id": "XAB",
+  "name": "西安银行",
+  "icon": false
+}, {
+  "id": "WFB",
+  "name": "潍坊银行",
+  "icon": false
+}, {
+  "id": "WHB",
+  "name": "威海市商业银行",
+  "icon": false
+}, {
+  "id": "WHRC",
+  "name": "武汉农商行",
+  "icon": false
+}, {
+  "id": "WJRCB",
+  "name": "吴江农商行",
+  "icon": false
+}, {
+  "id": "WLMQB",
+  "name": "乌鲁木齐银行",
+  "icon": false
+}, {
+  "id": "WRCB",
+  "name": "无锡农商",
+  "icon": false
+}, {
+  "id": "WZB",
+  "name": "温州银行",
+  "icon": false
+}, {
+  "id": "WEB",
+  "name": "微众银行",
+  "icon": false
+}, {
+  "id": "XIB",
+  "name": "厦门国际银行",
+  "icon": false
+}, {
+  "id": "XJRCCB",
+  "name": "新疆农信银行",
+  "icon": false
+}, {
+  "id": "XMCCB",
+  "name": "厦门银行",
+  "icon": false
+}, {
+  "id": "YNRCCB",
+  "name": "云南农信",
+  "icon": false
+}, {
+  "id": "YRRCB",
+  "name": "黄河农商银行",
+  "icon": false
+}, {
+  "id": "YTB",
+  "name": "烟台银行",
+  "icon": false
+}, {
+  "id": "ZJB",
+  "name": "紫金农商银行",
+  "icon": false
+}, {
+  "id": "ZJLXRB",
+  "name": "兰溪越商银行",
+  "icon": false
+}, {
+  "id": "ZJRCUB",
+  "name": "浙江农信",
+  "icon": false
+}, {
+  "id": "AHRCUB",
+  "name": "安徽省农村信用社联合社",
+  "icon": false
+}, {
+  "id": "SRB",
+  "name": "上饶银行",
+  "icon": false
+}, {
+  "id": "ZYB",
+  "name": "中原银行",
+  "icon": false
+}, {
+  "id": "ZRCB",
+  "name": "张家港农商行",
+  "icon": false
+}, {
+  "id": "SRCB",
+  "name": "上海农商银行",
+  "icon": false
+}, {
+  "id": "ZJTLCB",
+  "name": "浙江泰隆银行",
+  "icon": false
+}, {
+  "id": "SUZB",
+  "name": "苏州银行",
+  "icon": false
+}, {
+  "id": "SXNX",
+  "name": "山西农信",
+  "icon": false
+}, {
+  "id": "SXXH",
+  "name": "陕西信合",
+  "icon": false
+}, {
+  "id": "AE",
+  "name": "AE",
+  "icon": false
+}, {
+  "id": "TACCB",
+  "name": "泰安银行",
+  "icon": false
+}, {
+  "id": "TCRCB",
+  "name": "太仓农商行",
+  "icon": false
+}, {
+  "id": "TJBHB",
+  "name": "天津滨海农商行",
+  "icon": false
+}, {
+  "id": "TJB",
+  "name": "天津银行",
+  "icon": false
+}, {
+  "id": "TRCB",
+  "name": "天津农商",
+  "icon": false
+}, {
+  "id": "TZB",
+  "name": "台州银行",
+  "icon": false
+}, {
+  "id": "URB",
+  "name": "联合村镇银行",
+  "icon": false
+}, {
+  "id": "DYB",
+  "name": "东营银行",
+  "icon": false
+}, {
+  "id": "CSRCB",
+  "name": "常熟农商银行",
+  "icon": false
+}, {
+  "id": "CZB",
+  "name": "浙商银行",
+  "icon": true
+}, {
+  "id": "CZCB",
+  "name": "稠州银行",
+  "icon": false
+}, {
+  "id": "DANDONGB",
+  "name": "丹东银行",
+  "icon": false
+}, {
+  "id": "DLB",
+  "name": "大连银行",
+  "icon": true
+}, {
+  "id": "DRCB",
+  "name": "东莞农商银行",
+  "icon": false
+}, {
+  "id": "DYCCB",
+  "name": "德阳银行",
+  "icon": false
+}, {
+  "id": "FBB",
+  "name": "富邦华一银行",
+  "icon": false
+}, {
+  "id": "FDB",
+  "name": "富滇银行",
+  "icon": false
+}, {
+  "id": "FJHXB",
+  "name": "福建海峡银行",
+  "icon": false
+}, {
+  "id": "FJNX",
+  "name": "福建农信银行",
+  "icon": false
+}, {
+  "id": "FUXINB",
+  "name": "阜新银行",
+  "icon": false
+}, {
+  "id": "BOCDB",
+  "name": "承德银行",
+  "icon": false
+}, {
+  "id": "JSNX",
+  "name": "江苏农商行",
+  "icon": false
+}, {
+  "id": "BOLFB",
+  "name": "廊坊银行",
+  "icon": false
+}, {
+  "id": "CBHB",
+  "name": "渤海银行",
+  "icon": false
+}, {
+  "id": "CDRCB",
+  "name": "成都农商银行",
+  "icon": false
+}, {
+  "id": "BYK",
+  "name": "营口银行",
+  "icon": false
+}, {
+  "id": "BOZ",
+  "name": "张家口市商业银行",
+  "icon": false
+}, {
+  "id": "CFT",
+  "name": "零钱",
+  "icon": false
+}, {
+  "id": "BOTSB",
+  "name": "唐山银行",
+  "icon": false
+}, {
+  "id": "BOSZS",
+  "name": "石嘴山银行",
+  "icon": false
+}, {
+  "id": "BOSXB",
+  "name": "绍兴银行",
+  "icon": false
+}, {
+  "id": "BONX",
+  "name": "宁夏银行",
+  "icon": false
+}, {
+  "id": "GDHX",
+  "name": "广东华兴银行",
+  "icon": false
+}, {
+  "id": "BOLB",
+  "name": "洛阳银行",
+  "icon": false
+}, {
+  "id": "BOJX",
+  "name": "嘉兴银行",
+  "icon": false
+}, {
+  "id": "BOIMCB",
+  "name": "内蒙古银行",
+  "icon": false
+}, {
+  "id": "BOHN",
+  "name": "海南银行",
+  "icon": false
+}, {
+  "id": "BOD",
+  "name": "东莞银行",
+  "icon": false
+}, {
+  "id": "CQRCB",
+  "name": "重庆农商银行",
+  "icon": false
+}, {
+  "id": "CQTGB",
+  "name": "重庆三峡银行",
+  "icon": false
+}, {
+  "id": "CSCB",
+  "name": "长沙银行",
+  "icon": false
+}, {
+  "id": "BOB",
+  "name": "北京银行",
+  "icon": true
+}, {
+  "id": "GDRCU",
+  "name": "广东农信银行",
+  "icon": true
+}, {
+  "id": "HRXJB",
+  "name": "华融湘江银行",
+  "icon": false
+}, {
+  "id": "HSBC",
+  "name": "恒生银行",
+  "icon": false
+}, {
+  "id": "HSB",
+  "name": "徽商银行",
+  "icon": false
+}, {
+  "id": "HUNNX",
+  "name": "湖南农信",
+  "icon": false
+}, {
+  "id": "HUSRB",
+  "name": "湖商村镇银行",
+  "icon": false
+}, {
+  "id": "HXB",
+  "name": "华夏银行",
+  "icon": true
+}, {
+  "id": "HNNX",
+  "name": "河南农信",
+  "icon": false
+}, {
+  "id": "BNC",
+  "name": "江西银行",
+  "icon": false
+}, {
+  "id": "JCB",
+  "name": "JCB",
+  "icon": false
+}, {
+  "id": "JJCCB",
+  "name": "九江银行",
+  "icon": false
+}, {
+  "id": "JLB",
+  "name": "吉林银行",
+  "icon": true
+}, {
+  "id": "JLNX",
+  "name": "吉林农信",
+  "icon": false
+}, {
+  "id": "JNRCB",
+  "name": "江南农商",
+  "icon": false
+}, {
+  "id": "JRCB",
+  "name": "江阴农商行",
+  "icon": false
+}, {
+  "id": "JSHB",
+  "name": "晋商银行",
+  "icon": false
+}, {
+  "id": "HAINNX",
+  "name": "海南农信",
+  "icon": false
+}, {
+  "id": "GLB",
+  "name": "桂林银行",
+  "icon": false
+}, {
+  "id": "GRCB",
+  "name": "广州农商银行",
+  "icon": false
+}, {
+  "id": "GSB",
+  "name": "甘肃银行",
+  "icon": false
+}, {
+  "id": "GSNX",
+  "name": "甘肃农信",
+  "icon": false
+}, {
+  "id": "GXNX",
+  "name": "广西农信",
+  "icon": false
+}, {
+  "id": "GYCB",
+  "name": "贵阳银行",
+  "icon": false
+}, {
+  "id": "GZNX",
+  "name": "贵州农信",
+  "icon": false
+}, {
+  "id": "HKB",
+  "name": "汉口银行",
+  "icon": false
+}, {
+  "id": "HANAB",
+  "name": "韩亚银行",
+  "icon": false
+}, {
+  "id": "HBCB",
+  "name": "湖北银行",
+  "icon": false
+}, {
+  "id": "HBNX",
+  "name": "湖北农信",
+  "icon": false
+}, {
+  "id": "HDCB",
+  "name": "邯郸银行",
+  "icon": false
+}, {
+  "id": "HEBNX",
+  "name": "河北农信",
+  "icon": false
+}, {
+  "id": "HFB",
+  "name": "恒丰银行",
+  "icon": false
+}, {
+  "id": "HKBEA",
+  "name": "东亚银行",
+  "icon": false
+}, {
+  "id": "MASTERCARD",
+  "name": "MasterCard",
+  "icon": true
+}, {
+  "id": "VISA",
+  "name": "VISA",
+  "icon": true
+}, {
+  "id": "LQT",
+  "name": "零钱通",
+  "icon": false
+}], types: {
+  "CREDIT": "信用卡",
+  "DEBIT": "储蓄卡"
+}
+}

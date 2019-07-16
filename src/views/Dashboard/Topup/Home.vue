@@ -176,6 +176,7 @@
                 <v-flex>
                   <v-dialog v-model="dialog" persistent max-width="290">
                     <v-card>
+                      <v-progress-linear indeterminate v-if="payment.checking.progress" class="my-0 mb-2" />
                       <v-card-title class="headline">
                         <span v-show="$vuetify.breakpoint.smAndUp">扫描二维码以</span>支付</v-card-title>
                       <v-card-text>
@@ -188,16 +189,13 @@
                         </v-flex>
                       </v-card-text>
                       <v-card-actions>
+                        <v-btn color="red darken-1" flat @click="$router.push({name: 'Dashboard'})">
+                          取消
+                        </v-btn>
                         <v-spacer></v-spacer>
-                        <v-slide-x-reverse-transition>
-                          <v-btn color="red darken-1" flat @click="$router.push({name: 'Dashboard'})"
-                                 v-if="!payment.checking">
-                            取消
-                          </v-btn>
-                        </v-slide-x-reverse-transition>
                         <v-btn color="green darken-2" class="white--text" @click="checkOrder"
-                               :loading="payment.checking" :disabled="payment.checking">
-                          我已支付 <v-icon right>done</v-icon>
+                               :disabled="payment.checking.progress">
+                          <v-icon left>{{ payment.checking.icon }}</v-icon> {{ payment.checking.text }}
                         </v-btn>
                       </v-card-actions>
                     </v-card>
@@ -230,7 +228,7 @@
 
 <script>
   import {validationMixin} from 'vuelidate'
-  import {required, integer} from 'vuelidate/lib/validators'
+  import {required, integer, between} from 'vuelidate/lib/validators'
   import topup from '@/api/topup'
 
   const positive = (value) => value > 0;
@@ -243,7 +241,7 @@
       price: {
         required,
         integer,
-        positive
+        between: between(1, 10000)
       }
     },
 
@@ -277,7 +275,11 @@
           submitting: false,  // 选择支付方式后，提交订单的过程
           orderId: null,  // 订单号，在提交订单后得到
           qrContent: null,  // 二维码内容，在提交订单后得到
-          checking: false,  // 点击“已支付”后，查询支付成功与否的过程
+          checking: {
+            progress: true, // 显示preloader - 正在等待
+            text: "正在建立连接...", // 提示文字
+            icon: "mdi-lan-pending" // 提示图标
+          },  // 点击“已支付”后，查询支付成功与否的过程
         },
         snackbar: {
           enabled: false,
@@ -325,6 +327,7 @@
 
             this.stepNow += 1;
             this.dialog = true;
+            this.checkOrder(this.payment.orderId)
           })
           .catch((err) => {
             this.snackbar = {
@@ -336,42 +339,55 @@
           .finally(() => {
             this.payment.submitting = false
           })
-        console.log(this)
       },
-      checkOrder () {
+      checkOrder (orderId) {
         this.payment.checking = true;
-        topup.checkOrder(this.payment.orderId)
-          .then(({data}) => {
-            if (data.paid_time) {
-              let paidAt = Date.parse(data.paid_time);
-              if (paidAt) {
-                this.snackbar = {
-                  enabled: true,
-                  text: `充值成功：已收款 ${data.paid_price} 元`,
-                  color: 'success'
-                }
-              }
+        let sse = new EventSource(`http://localhost:8085/api/topup/order/${orderId}/polling?bearer=${this.$store.state.auth.token}`);
+        sse.onopen = () => {
+          this.payment.checking = {
+            progress: true,
+            text: "等待付款...",
+            icon: "mdi-bank-transaction"
+          }
+        };
+        sse.onerror = error => {
+          console.error(error)
+          this.payment.checking = {
+            progress: true,
+            text: "连接建立失败",
+            icon: "mdi-lan-disconnect"
+          };
+          this.snackbar = {
+            enabled: true,
+            text: "建立通知连接失败：" + error.message,
+            color: 'error'
+          }
+          return false
+        }
 
-              this.dialog = false;
-              this.stepNow += 1;
-            } else {
-              this.snackbar = {
-                enabled: true,
-                text: '暂未收到付款确认，请稍后重试',
-                color: 'warning'
-              }
-            }
-          })
-          .catch (err => {
+        sse.addEventListener("received", event => {
+          if (event.data === this.payment.orderId) {
             this.snackbar = {
               enabled: true,
-              text: '充值失败：' + err.responseMessage,
-              color: 'error'
-            }
-          })
-          .finally(() => {
-            this.payment.checking = false;
-          })
+              text: `充值成功`,
+              color: 'success'
+            };
+            this.dialog = false;
+            this.stepNow += 1;
+          }
+          sse.close()
+        }, false);
+
+        sse.addEventListener("expired", () => {
+          this.snackbar = {
+            enabled: true,
+            text: `长时间未付款，交易已关闭。请重新支付`,
+            color: 'error'
+          }
+          this.dialog = false;
+          this.stepNow = 2;
+          sse.close()
+        }, false);
       },
       getPriceHint() {
         if (this.itemLoading) {
@@ -404,7 +420,7 @@
         if (!this.$v.price.$dirty) return errors;
         !this.$v.price.required && errors.push('“金额” 为必填项');
         !this.$v.price.integer && errors.push('“金额” 必须为整数');
-        !this.$v.price.positive && errors.push('“金额” 必须为非零正整数');
+        !this.$v.price.between && errors.push('“金额” 必须大于 1 且小于 10,000');
         return errors
       },
       transaction () {

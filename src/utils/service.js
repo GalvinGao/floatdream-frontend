@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === 'development') {
   // }));
 }
 
-axios.interceptors.request.use(function (config) {
+service.interceptors.request.use(function (config) {
   // Do something before request is sent
   if (store.state.auth.token) {
     config.headers = {

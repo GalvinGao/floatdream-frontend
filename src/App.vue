@@ -15,8 +15,8 @@
       app
     >
       <router-link :to="{'name': 'Home'}" style="text-decoration: none">
-        <div class="drawer-logo indigo darken-2 white--text">
-          FloatDream
+        <div class="drawer-logo indigo darken-2 white--text font-serif-bold">
+          一梦千年
         </div>
       </router-link>
 
@@ -64,7 +64,7 @@
           <template v-slot:activator>
             <v-list-tile>
               <v-list-tile-content>
-                <v-list-tile-title>我的 FloatDream</v-list-tile-title>
+                <v-list-tile-title>我的账户</v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
           </template>
@@ -112,7 +112,9 @@
     </v-navigation-drawer>
     <v-toolbar color="indigo" dark fixed app>
       <v-toolbar-side-icon @click.stop="drawerSwitch"></v-toolbar-side-icon>
-      <v-toolbar-title>FloatDream</v-toolbar-title>
+      <v-toolbar-title class="font-serif-bold">
+        一梦千年
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <span v-if="this.$store.state.auth.state === 'success'"
             @mouseover="authButtonHovered = true"
@@ -152,7 +154,7 @@
         {{ server.loading ? '' : (server.operating ? `${server.latency}ms` : '') }}
       </span>
       <v-spacer></v-spacer>
-      <span class="white--text">&copy; 2015-{{new Date().getFullYear()}} FloatDream</span>
+      <span class="white--text">&copy; 2015-{{new Date().getFullYear()}} <span class="font-serif-bold">一梦千年</span></span>
     </v-footer>
   </v-app>
 </template>
@@ -230,6 +232,11 @@
 <style>
   .font-serif, h1, h2, h3, h4, h5, h6 {
     font-family: 'Noto Serif SC', serif;
+  }
+
+  .font-serif-bold {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 700;
   }
 
   .default-transition-enter-active {

@@ -3,8 +3,8 @@
     <v-flex xs12 sm10 md8 lg6 text-xs-center>
       <v-card class="white--text pa-1 under-construction" elevation="24">
         <v-container>
-          <h1 class="mb-3">功能建设中~</h1>
-          <p>还没好，再等等 ~(￣▽￣)~*</p>
+          <h1 class="mb-3">功能建设中</h1>
+          <p>前端小哥哥还在努力肝代码 ~(￣▽￣)~*</p>
         </v-container>
       </v-card>
     </v-flex>
@@ -19,7 +19,8 @@
 
 <style scoped>
 #under-construction--page {
-  background: repeating-linear-gradient(-45deg, #a88024, #a88024 90px, black 90px, black 180px);
+  background: repeating-linear-gradient(-45deg, rgba(168, 128, 36, .9), rgba(168, 128, 36, .9) 90px, rgba(0, 0, 0, .8) 90px, rgba(0, 0, 0, .8) 180px);
+  z-index: 10;
 }
 .under-construction {
   background: rgba(0, 0, 0, .8);

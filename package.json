@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@chenfengyuan/vue-qrcode": "^1.0.1",
+    "@mdi/font": "^3.7.95",
     "@sentry/browser": "^5.5.0",
     "@sentry/integrations": "^5.5.0",
     "axios": "^0.19.0",
@@ -17,6 +18,7 @@
     "core-js": "^2.6.5",
     "cryptico": "^1.0.2",
     "jsencrypt": "^3.0.0-rc.1",
+    "moment": "^2.24.0",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.4",
     "vue-recaptcha": "^1.2.0",
@@ -27,7 +29,6 @@
     "vuex-persistedstate": "^2.5.4"
   },
   "devDependencies": {
-    "@mdi/font": "^3.7.95",
     "@vue/cli-plugin-babel": "^3.8.0",
     "@vue/cli-plugin-eslint": "^3.8.0",
     "@vue/cli-service": "^3.8.0",

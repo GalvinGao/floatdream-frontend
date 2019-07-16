@@ -86,6 +86,16 @@ const router = new Router({
           }
         },
         {
+          path: 'topup/orders',
+          name: 'DashboardTopupOrderList',
+          components: {
+            dashboard: () => import(/* webpackChunkName: "dashboard" */'@/views/Dashboard/Topup/OrderList.vue')
+          },
+          meta: {
+            requiresAuth: true
+          }
+        },
+        {
           path: 'skin',
           name: 'DashboardSkinFactory',
           components: {

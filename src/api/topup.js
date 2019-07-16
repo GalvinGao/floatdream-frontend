@@ -9,5 +9,8 @@ export default {
   },
   checkOrder (orderId) {
     return service.get(`/topup/order/${orderId}/status`)
+  },
+  listOrder (params) {
+    return service.get(`/topup/order`, {params})
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <v-layout justify-center align-center fill-height style="overflow: hidden">
     <div id="login-page--background"></div>
-    <v-snackbar v-model="snackbar.enabled" :color="snackbar.color" :timeout="3000">
+    <v-snackbar v-model="snackbar.enabled" :color="snackbar.color" :timeout="10000">
       {{ snackbar.text }}
       <v-btn
           dark
@@ -196,7 +196,7 @@
 <style scoped>
   #login-page--background {
     background: radial-gradient(ellipse at center, #5989df 0%, #1c1c36 100%);
-    background: url('../assets/background/2.png') 0 0 / cover fixed;
+    background: url('../assets/background/2.jpg') 0 0 / cover fixed;
     -webkit-background-size: auto 100%;
     background-size: auto 100%;
 
@@ -210,7 +210,7 @@
   }
 
   #login-page--card::before {
-    background: url('../assets/background/2.png') 0 0 / cover fixed;
+    background: url('../assets/background/2.jpg') 0 0 / cover fixed;
     content: '';
     margin: 0px;
     position: absolute;

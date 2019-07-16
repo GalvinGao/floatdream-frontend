@@ -11,7 +11,7 @@
       </v-btn>
     </v-snackbar>
     <v-flex xs12 sm10 md8 lg6>
-      <v-card class="transparent pa-3" id="login-page--card" elevation="12">
+      <v-card class="pa-3" id="login-page--card" elevation="12">
         <v-form ref="form" lazy-validation @keyup.native.enter="submit" class="form">
           <v-container>
             <v-layout column>
@@ -122,17 +122,18 @@
 </script>
 
 <style scoped>
-  #login-page--card::before {
-    background: url('../../../assets/background/1.png') 0 0 / cover fixed;
-    content: '';
-    margin: 0px;
-    position: absolute;
-    top: -48px;
-    right: -48px;
-    bottom: -48px;
-    left: -48px;
-    filter: blur(20px) saturate(.75);
-    z-index: 0;
+  #login-page--card {
+    background: rgba(255, 255, 255, .8);
+    /*background: url('../../../assets/background/1.png') 0 0 / cover fixed;*/
+  /*  content: '';*/
+  /*  margin: 0px;*/
+  /*  position: absolute;*/
+  /*  top: -48px;*/
+  /*  right: -48px;*/
+  /*  bottom: -48px;*/
+  /*  left: -48px;*/
+  /*  filter: blur(20px) saturate(.75);*/
+  /*  z-index: 0;*/
   }
 
   .form {

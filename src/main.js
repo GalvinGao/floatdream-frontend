@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import moment from 'moment'
 import './plugins/vuetify'
 import App from './App.vue'
 // import axios from 'axios'
@@ -13,10 +14,12 @@ import StatsCard from '@/components/StatsCard'
 import * as Sentry from '@sentry/browser';
 import * as Integrations from '@sentry/integrations';
 
-Sentry.init({
-  dsn: 'https://4958c96c26804f52bf7d9693e94a85a6@sentry.io/1499984',
-  integrations: [new Integrations.Vue({Vue, attachProps: true})],
-});
+if (process.env.NODE_ENV === 'production') {
+  Sentry.init({
+    dsn: 'https://4958c96c26804f52bf7d9693e94a85a6@sentry.io/1499984',
+    integrations: [new Integrations.Vue({Vue, attachProps: true})],
+  });
+}
 
 Vue.component('helper-offset', HelperOffset);
 Vue.component('card', Card);
@@ -54,6 +57,9 @@ router.beforeEach((to, from, next) => {
     next() // make sure to always call next()!
   }
 });
+
+Vue.prototype.$moment = moment;
+Vue.prototype.$moment.locale("zh-cn");
 
 new Vue({
   router,
