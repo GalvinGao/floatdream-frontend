@@ -72,7 +72,7 @@
     background-position: center center;
     background-attachment: fixed;
 
-    transition: all 1.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: background-image 2s cubic-bezier(0.165, 0.84, 0.44, 1);
 
     /*background-image: url("../assets/background/1.jpg");*/
     z-index: 0;

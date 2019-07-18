@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<!--
+
+开发人员，调用网站 API 时请注意：
+  由于涉及用户付款、登录信息（明文）的通信，为用户信息安全考量，启用了 TLS 加密且配置如下（详细信息可见 https://wiki.mozilla.org/Security/Server_Side_TLS#Intermediate_compatibility_.28recommended.29)：
+    - 最低支持 TLS 协议版本：TLS 1.2
+    - 加密算法使用：TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+
+  因此，各平台支持上述 TLS 协议及加密算法的最小要求为：
+    - FireFox: 27
+    - Android: 4.4.2
+    - Chrome: 31
+    - Edge: 12
+    - IE: 11 on Windows 7
+    - Java: 8u31 (插件开发人员请特别注意)
+    - OpenSSL: 1.0.1
+    - Opera: 20
+    - Safari: 9 (iOS 9)
+
+  故：
+    - 系统、浏览器或 SDK 版本低于上述要求的，请升级对应实体，否则将无法与服务器进行任何程度上的有效通信
+    - 将不支持、也永远不会再支持 明文 HTTP 通信（一般来说在 80 端口那货）
+    - /favicon.ico、/robots.txt 将返回 307 Permanent Redirect 至 HTTPS 连接，非 TLS 链路将不提供任何业务信息
+    - 暂不开启 HSTS（防止后期不具备提供标准 TLS 连接能力时网站无法访问）
+
+  有问题请联系开发者。
+  多谢配合与理解！
+
+-->
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="renderer" content="webkit"/>
+  <meta name="force-rendering" content="webkit"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>浏览器支持检测 | 一梦千年</title>
+
+  <style>
+    body, html {
+      padding: 0;
+      margin: 0;
+    }
+    body.danger {
+      background: #4d2222;
+    }
+    body.warning {
+      background: #4d4d22;
+    }
+    body.success {
+      background: #224d22;
+    }
+    .supportDialog {
+      vertical-align: middle;
+
+      margin: 32px 13%;
+      width: 70%;
+
+      color: #000;
+      font-weight: 700;
+      font-size: 18px;
+      font-family: -apple-system, Noto Sans SC, BlinkMacSystemFont, "Segoe UI", Microsoft YaHei UI, Microsoft Yahei, 微软雅黑, Helvetica, Arial, sans-serif;
+
+      padding: 36px 48px;
+      word-break: break-all;
+      text-align: center;
+      line-height: 1.4;
+      border-radius: 8px;
+
+      display: none;
+    }
+
+    .supportDialog.danger {
+      background: #cc696f;
+      border: 4px solid #ff878f;
+      color: #261415;
+    }
+
+    .supportDialog.warning {
+      background: #cccc56;
+      border: 4px solid #ffff7d;
+      color: #272713;
+    }
+
+    .supportDialog.success{
+      background: #439943;
+      box-shadow: 0 0 15px 0 rgba(0, 0, 0, .6);
+      color: #132613;
+      width: 240px;
+
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    h1 {
+      font-size: 48px;
+    }
+    h2 {
+      font-size: 36px;
+    }
+    strong {
+      font-weight: bolder;
+    }
+
+    button {
+      display: inline-block;
+      border: 2px solid black;
+      padding: 16px 24px;
+      margin: 0 8px;
+      text-decoration: none;
+      background: #3375e0;
+      color: #ffffff;
+      font-family: sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      text-align: center;
+      transition: background 50ms ease-out, transform 150ms ease;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    button:hover,
+    button:focus {
+      background: #009900;
+      color: #000;
+      transform: scale(1.05);
+    }
+
+    button:focus {
+      outline: 1px solid #fff;
+      outline-offset: -4px;
+    }
+
+    button:active {
+      transform: scale(0.99);
+    }
+
+    button.not-recommended {
+      background: #888;
+      font-size: 8px;
+      padding: 8px 12px;
+      border: #888;
+      opacity: 0.5;
+      outline-width: 0;
+      outline-style: solid;
+      outline-color: #cc2934;
+      outline-offset: 0;
+
+      cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAZiS0dEAAAAAAAA+UO7fwAAAAlwSFlzAAAASAAAAEgARslrPgAAALlJREFUSMftlDsOglAQRQ/ExLAJt0FrS6OlibZWhBW4FztbVkLjGpDQuAETTLQAEuT7ftN5k6km75x5Uwz8Y5AdUAIfhXoAUedtvz9IADwV4W3lOoKzJrwPWhTcJQVbQ7iyIJUUbIBKQuA3jRhYIZjCYvrZH3idhk2mOJ6vS9JNKyikRRH1XTHZf27gGySbgFfA3ha+Bl4j8DdwdDF9KAkHSEbgJ1dwgCu/Oz+4hANcJOFQ36ibFNw6XyMQwImd9pMDAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE5LTA3LTE4VDA3OjIzOjQ1KzAwOjAwcsPnjwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOS0wNy0xOFQwNzoyMzo0NSswMDowMAOeXzMAAAAodEVYdHN2ZzpiYXNlLXVyaQBmaWxlOi8vL3RtcC9tYWdpY2std1FXcE1wSDNYxOkuAAAAAElFTkSuQmCC"), pointer;
+      transition: outline-width 275ms ease-out; /* 这个按钮可不能让你点舒服咯 */
+    }
+
+    button.not-recommended:hover {
+      background: #cc2934;
+      opacity: 0.95;
+    }
+
+    button.not-recommended:active, button.not-recommended.hovering {
+      outline-width: 400px;
+      opacity: 1 !important;
+      transform: scale(3.5);
+    }
+
+    hr {
+      margin: 48px 0;
+      border: 1px solid black
+    }
+
+    #noResponseAnchor {
+      display: none
+    }
+  </style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;height:100%;width:100%;z-index:999;background:#cc2934;display:none" id="noticeMask">&nbsp;</div>
+  <div class="supportDialog danger" id="supportDetectionUnsupported">
+    <h1>危险！您正在使用的 <span id="rBrowserVersionDanger">浏览器</span> 已严重过期，请立即升级！</h1>
+    <p>自2016年1月12日起，微软不再为IE11以下版本提供相应支持和更新。没有关键的浏览器安全更新，您的电脑很可能已受到有害病毒、间谍软件和其他恶意软件的攻击：它们可以窃取您的财产信息、篡改文档内容、甚至对电脑硬件造成不可逆对严重损坏。为确保您的电脑安全，请立即停止使用IE的过期版本！</p>
+    <h2>在您升级前，一梦千年官网将无法为您提供服务</h2>
+    <p>由于您的浏览器版本过低，将无法与服务器建立加密通信，会直接造成付款信息泄露、账号被盗、恶意广告刷屏等风险。一梦千年考虑到玩家个人财产等信息安全，使用了更加安全（但您的浏览器不支持）的 TLS 1.3 加密协议，若需继续访问网站，请至少升级至安装于 Windows 7 上的 IE 11 或使用配备更先进技术的浏览器 - Google Chrome、Mozilla Firefox 等后再访问本站。</p>
+    <details>
+      <summary style="font-size: 12px; cursor: pointer">详细信息</summary>
+      <p style="border: 1px solid #633235; margin: 16px 48px; padding: 16px;">本网站使用了 TLS 1.2、TLS 1.3 加密通讯协议以加密所有通讯、保护用户隐私，但您的浏览器并不支持相关协议，将直接导致无法连接到安全链路。若需继续访问，可在下方选择下载谷歌 Google Chrome、火狐 Mozilla Firefox 等支持安全连接（TLS 1.3）的浏览器。</p>
+    </details>
+    <hr />
+    <button title="得益于内置的 Google 智能工具，Chrome 现在更易用、更安全、更快速。" onclick="go('chrome')">使用 Google Chrome (推荐)</button>
+    <button title="使用我们一系列隐私优先产品，得回您应受到的重视。" onclick="go('firefox')">使用 Mozilla Firefox</button>
+  </div>
+  <div class="supportDialog warning" id="supportDetectionPartialSupported">
+    <h1>您正在使用的 <span id="rBrowserVersionWarning"></span> 已过期，请升级！</h1>
+    <h2>在您升级前，一梦千年官网将<u>无法为您提供最佳体验</u></h2>
+    <p>我们使用了最新的 web 技术进行开发（Vue.js - MVVC 网页开发框架），但您的浏览器不支持相关接口。我们已尽最大努力为您使用的浏览器提供可用性保障但部分特殊接口却仍因您使用的浏览器技术过于过时而无法使用，导致网站排版、功能可用性受到限制。我们<strong>强烈建议您立即升级浏览器</strong>以获得最佳体验！</p>
+    <details>
+      <summary style="font-size: 12px; cursor: pointer">详细信息</summary>
+      <p style="border: 1px solid #633235; margin: 16px 48px; padding: 16px;">本网站使用了 <code>fetch</code>、<code>Server-side Event API</code> 及 <code>webp</code> 等您浏览器不支持的技术，这些技术可让您的体验更加流畅、消耗更少的系统资源并减少网页渲染开销；但由于您的浏览器并不支持上述技术，故我们无法使用更新的实现方式，只能通过大量修改底层代码以适配上述功能，网站体验将大打折扣</p>
+    </details>
+    <hr />
+    <button title="得益于内置的 Google 智能工具，Chrome 现在更易用、更安全、更快速。" onclick="go('chrome')">使用 Google Chrome (推荐)</button>
+    <button title="使用我们一系列隐私优先产品，得回您应受到的重视。" onclick="go('firefox')">使用 Mozilla Firefox</button>
+    <button id="ignoreWarning" class="not-recommended" onclick="warningDialog()">仍使用当前浏览器<br>(强烈不推荐)</button>
+  </div>
+  <div class="supportDialog success" id="supportDetectionSupported">
+    <span>
+      <svg class="lds-bluecat" width="180px"  height="240px"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+        <g transform="rotate(0.97464 50 50)">
+          <animateTransform attributeName="transform" type="rotate" values="360 50 50;0 50 50" keyTimes="0;1" dur="1.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.5 0 0.5 1" begin="-0.15000000000000002s"></animateTransform>
+          <circle cx="50" cy="50" r="39.891" stroke="#6994b7" stroke-width="14.4" fill="none" stroke-dasharray="0 300">
+            <animate attributeName="stroke-dasharray" values="15 300;55.1413599195142 300;15 300" keyTimes="0;0.5;1" dur="1.5s" repeatCount="indefinite" calcMode="linear" keySplines="0 0.4 0.6 1;0.4 0 1 0.6" begin="-0.069s"></animate>
+          </circle>
+          <circle cx="50" cy="50" r="39.891" stroke="#eeeeee" stroke-width="7.2" fill="none" stroke-dasharray="0 300">
+            <animate attributeName="stroke-dasharray" values="15 300;55.1413599195142 300;15 300" keyTimes="0;0.5;1" dur="1.5s" repeatCount="indefinite" calcMode="linear" keySplines="0 0.4 0.6 1;0.4 0 1 0.6" begin="-0.069s"></animate>
+          </circle>
+          <circle cx="50" cy="50" r="32.771" stroke="#000000" stroke-width="1" fill="none" stroke-dasharray="0 300">
+            <animate attributeName="stroke-dasharray" values="15 300;45.299378454348094 300;15 300" keyTimes="0;0.5;1" dur="1.5s" repeatCount="indefinite" calcMode="linear" keySplines="0 0.4 0.6 1;0.4 0 1 0.6" begin="-0.069s"></animate>
+          </circle>
+          <circle cx="50" cy="50" r="47.171" stroke="#000000" stroke-width="1" fill="none" stroke-dasharray="0 300">
+            <animate attributeName="stroke-dasharray" values="15 300;66.03388996804073 300;15 300" keyTimes="0;0.5;1" dur="1.5s" repeatCount="indefinite" calcMode="linear" keySplines="0 0.4 0.6 1;0.4 0 1 0.6" begin="-0.069s"></animate>
+          </circle>
+        </g>
+
+        <g transform="rotate(11.1822 50 50)">
+          <animateTransform attributeName="transform" type="rotate" values="360 50 50;0 50 50" keyTimes="0;1" dur="1.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.5 0 0.5 1"></animateTransform>
+    <path fill="#6994b7" stroke="#000000" d="M97.2,50.1c0,6.1-1.2,12.2-3.5,17.9l-13.3-5.4c1.6-3.9,2.4-8.2,2.4-12.4"></path>
+    <path fill="#eeeeee" d="M93.5,49.9c0,1.2,0,2.7-0.1,3.9l-0.4,3.6c-0.4,2-2.3,3.3-4.1,2.8l-0.2-0.1c-1.8-0.5-3.1-2.3-2.7-3.9l0.4-3 c0.1-1,0.1-2.3,0.1-3.3"></path>
+    <path fill="#6994b7" stroke="#000000" d="M85.4,62.7c-0.2,0.7-0.5,1.4-0.8,2.1c-0.3,0.7-0.6,1.4-0.9,2c-0.6,1.1-2,1.4-3.2,0.8c-1.1-0.7-1.7-2-1.2-2.9 c0.3-0.6,0.5-1.2,0.8-1.8c0.2-0.6,0.6-1.2,0.7-1.8"></path>
+    <path fill="#6994b7" stroke="#000000" d="M94.5,65.8c-0.3,0.9-0.7,1.7-1,2.6c-0.4,0.9-0.7,1.7-1.1,2.5c-0.7,1.4-2.3,1.9-3.4,1.3h0 c-1.1-0.7-1.5-2.2-0.9-3.4c0.4-0.8,0.7-1.5,1-2.3c0.3-0.8,0.7-1.5,0.9-2.3"></path>
+        </g>
+        <g transform="rotate(0.97464 50 50)">
+          <animateTransform attributeName="transform" type="rotate" values="360 50 50;0 50 50" keyTimes="0;1" dur="1.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.5 0 0.5 1" begin="-0.15000000000000002s"></animateTransform>
+          <path fill="#eeeeee" stroke="#000000" d="M86.9,35.3l-6,2.4c-0.4-1.2-1.1-2.4-1.7-3.5c-0.2-0.5,0.3-1.1,0.9-1C82.3,33.8,84.8,34.4,86.9,35.3z"></path>
+          <path fill="#eeeeee" stroke="#000000" d="M87.1,35.3l6-2.4c-0.6-1.7-1.5-3.3-2.3-4.9c-0.3-0.7-1.2-0.6-1.4,0.1C88.8,30.6,88.2,33,87.1,35.3z"></path>
+          <path fill="#6994b7" stroke="#000000" d="M82.8,50.1c0-3.4-0.5-6.8-1.6-10c-0.2-0.8-0.4-1.5-0.3-2.3c0.1-0.8,0.4-1.6,0.7-2.4c0.7-1.5,1.9-3.1,3.7-4l0,0 c1.8-0.9,3.7-1.1,5.6-0.3c0.9,0.4,1.7,1,2.4,1.8c0.7,0.8,1.3,1.7,1.7,2.8c1.5,4.6,2.2,9.5,2.3,14.4"></path>
+          <path fill="#eeeeee" d="M86.3,50.2l0-0.9l-0.1-0.9l-0.1-1.9c0-0.9,0.2-1.7,0.7-2.3c0.5-0.7,1.3-1.2,2.3-1.4l0.3,0 c0.9-0.2,1.9,0,2.6,0.6c0.7,0.5,1.3,1.4,1.4,2.4l0.2,2.2l0.1,1.1l0,1.1"></path>
+          <path fill="#ff9922" d="M93.2,34.6c0.1,0.4-0.3,0.8-0.9,1c-0.6,0.2-1.2,0.1-1.4-0.2c-0.1-0.3,0.3-0.8,0.9-1 C92.4,34.2,93,34.3,93.2,34.6z"></path>
+          <path fill="#ff9922" d="M81.9,38.7c0.1,0.3,0.7,0.3,1.3,0.1c0.6-0.2,1-0.6,0.9-0.9c-0.1-0.3-0.7-0.3-1.3-0.1 C82.2,38,81.8,38.4,81.9,38.7z"></path>
+          <path fill="#000000" d="M88.5,36.8c0.1,0.3-0.2,0.7-0.6,0.8c-0.5,0.2-0.9,0-1.1-0.3c-0.1-0.3,0.2-0.7,0.6-0.8C87.9,36.3,88.4,36.4,88.5,36.8z"></path>
+          <path stroke="#000000" d="M85.9,38.9c0.2,0.6,0.8,0.9,1.4,0.7c0.6-0.2,0.9-0.9,0.6-2.1c0.3,1.2,1,1.7,1.6,1.5c0.6-0.2,0.9-0.8,0.8-1.4"></path>
+          <path fill="#6994b7" stroke="#000000" d="M86.8,42.3l0.4,2.2c0.1,0.4,0.1,0.7,0.2,1.1l0.1,1.1c0.1,1.2-0.9,2.3-2.2,2.3c-1.3,0-2.5-0.8-2.5-1.9l-0.1-1 c0-0.3-0.1-0.6-0.2-1l-0.3-1.9"></path>
+          <path fill="#6994b7" stroke="#000000" d="M96.2,40.3l0.5,2.7c0.1,0.5,0.2,0.9,0.2,1.4l0.1,1.4c0.1,1.5-0.9,2.8-2.2,2.9h0c-1.3,0-2.5-1.1-2.6-2.4 L92.1,45c0-0.4-0.1-0.8-0.2-1.2l-0.4-2.5"></path>
+          <path fill="#000000" d="M91.1,34.1c0.3,0.7,0,1.4-0.7,1.6c-0.6,0.2-1.3-0.1-1.6-0.7c-0.2-0.6,0-1.4,0.7-1.6C90.1,33.1,90.8,33.5,91.1,34.1z"></path>
+          <path fill="#000000" d="M85.5,36.3c0.2,0.6-0.1,1.2-0.7,1.5c-0.6,0.2-1.3,0-1.5-0.6C83,36.7,83.4,36,84,35.8C84.6,35.5,85.3,35.7,85.5,36.3z"></path>
+
+        </g>
+      </svg>
+    </span>
+    <p id="noResponseAnchor">
+      <span>正在跳转中</span><br>
+      <span style="font-size: 12px;"><a href="#" onclick="go('https');document.getElementById('noResponseAnchor').innerHTML='加载中...'" style="color: #000; ">无响应？</a></span>
+    </p>
+  </div>
+  <script>
+    function go(key) {
+      switch (key) {
+        case 'https':
+          if (window.localStorage) {
+            window.localStorage.setItem("browserCompatibilityCheckedAt", new Date().getTime().toString())
+          } else {
+            document.cookie = "browserCompatibilityCheckedAt=" + new Date().getTime().toString() +"; max-age=31536000; path=/; secure=true";
+          }
+          setTimeout(function () {
+            if (window.location.href.indexOf("/_checkBrowser")) {
+              location.replace("/")
+            } else {
+              location.replace('https:' + window.location.href.substring(window.location.protocol.length));
+            }
+          }, 300)
+          break;
+        case 'chrome':
+          if (browser.mobile) {
+            if (browser.os.indexOf("OS X") !== -1 || browser.os.indexOf("iOS") !== -1) {
+              location.href = "https://itunes.apple.com/us/app/chrome/id535886823"
+            } else if (browser.os.indexOf("Android") !== -1 || browser.os.indexOf("android") !== -1) {
+              location.href = "https://school.cdn.iblueg.cn/soft/Chrome_v75.0.3770.143.apk"
+            } else {
+              location.href = "https://www.google.cn/chrome/"
+            }
+          } else {
+            location.href = "https://www.google.cn/chrome/";
+          }
+          break;
+        case 'firefox':
+          if (browser.mobile) {
+            location.href = "https://app.adjust.com/x8xj03";
+          } else {
+            location.href = "https://www.mozilla.org/zh-CN/firefox/new/";
+          }
+          break;
+      }
+    }
+
+    function warningDialog() {
+      // document.getElementById("noticeMask").style.display = "block";
+      document.getElementById("ignoreWarning").className += "hovering"
+      setTimeout(function() {
+        if (confirm("【警告 ⚠️】继续访问将可能遇到网页显示异常甚至无法使用，严重影响正常使用。强烈建议升级浏览器到最新版本！\n\n【确定/OK】：我已理解，并仍要继续访问\n【取消/Cancel】：返回，以查看新版浏览器下载链接")) {
+          go('https')
+        } else {
+          // 彻底让他们泯灭不升级的想法 ✓
+          document.getElementById("ignoreWarning").style.opacity = 0.2
+          document.getElementById("ignoreWarning").style.position = "absolute"
+          document.getElementById("ignoreWarning").style.bottom = "-3px"
+          document.getElementById("ignoreWarning").style.right = "-5px"
+          document.getElementById("ignoreWarning").style.padding = "8px 0 0 12px"
+        }
+        // document.getElementById("noticeMask").style.display = "none";
+        document.getElementById("ignoreWarning").className.replace("hovering", "")
+      }, 275)
+    }
+  </script>
+<script>
+  (function (global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+      typeof define === 'function' && define.amd ? define(factory) :
+        (global.browserDetect = factory());
+  }(this, (function () { 'use strict';
+
+    /*! *****************************************************************************
+    Copyright (c) Microsoft Corporation. All rights reserved.
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+    this file except in compliance with the License. You may obtain a copy of the
+    License at http://www.apache.org/licenses/LICENSE-2.0
+
+    THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+    WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+    MERCHANTABLITY OR NON-INFRINGEMENT.
+
+    See the Apache Version 2.0 License for specific language governing permissions
+    and limitations under the License.
+    ***************************************************************************** */
+
+    var __assign = Object.assign || function __assign(t) {
+      for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+      return t;
+    };
+
+    var browsers = [
+      ['firefox', /Firefox\/([0-9\.]+)(?:\s|$)/],
+      ['opera', /Opera\/([0-9\.]+)(?:\s|$)/],
+      ['opera', /OPR\/([0-9\.]+)(:?\s|$)$/],
+      ['edge', /Edge\/([0-9\._]+)/],
+      ['ie', /Trident\/7\.0.*rv\:([0-9\.]+)\).*Gecko$/],
+      ['ie', /MSIE\s([0-9\.]+);.*Trident\/[4-7].0/],
+      ['ie', /MSIE\s(7\.0)/],
+      ['safari', /Version\/([0-9\._]+).*Safari/],
+      ['chrome', /(?!Chrom.*OPR)Chrom(?:e|ium)\/([0-9\.]+)(:?\s|$)/],
+      ['bb10', /BB10;\sTouch.*Version\/([0-9\.]+)/],
+      ['android', /Android\s([0-9\.]+)/],
+      ['ios', /Version\/([0-9\._]+).*Mobile.*Safari.*/],
+      ['yandexbrowser', /YaBrowser\/([0-9\._]+)/],
+      ['crios', /CriOS\/([0-9\.]+)(:?\s|$)/]
+    ];
+    var os = [
+      'Windows Phone',
+      'Android',
+      'CentOS',
+      { name: 'Chrome OS', pattern: 'CrOS' },
+      'Debian',
+      'Fedora',
+      'FreeBSD',
+      'Gentoo',
+      'Haiku',
+      'Kubuntu',
+      'Linux Mint',
+      'OpenBSD',
+      'Red Hat',
+      'SuSE',
+      'Ubuntu',
+      'Xubuntu',
+      'Cygwin',
+      'Symbian OS',
+      'hpwOS',
+      'webOS ',
+      'webOS',
+      'Tablet OS',
+      'Tizen',
+      'Linux',
+      'Mac OS X',
+      'Macintosh',
+      'Mac',
+      'Windows 98;',
+      'Windows '
+    ];
+    var osVersions = {
+      '10.0': '10',
+      '6.4': '10 Technical Preview',
+      '6.3': '8.1',
+      '6.2': '8',
+      '6.1': 'Server 2008 R2 / 7',
+      '6.0': 'Server 2008 / Vista',
+      '5.2': 'Server 2003 / XP 64-bit',
+      '5.1': 'XP',
+      '5.01': '2000 SP1',
+      '5.0': '2000',
+      '4.0': 'NT',
+      '4.90': 'ME'
+    };
+
+    var mobileRegExp = new RegExp(['(android|bb\\d+|meego).+mobile|avantgo|bada\\/|blackberry|blazer|',
+      'compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|',
+      'midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)',
+      '\\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\\.(browser|link)|vodafone|',
+      'wap|windows ce|xda|xiino'].join(''), 'i');
+    var mobilePrefixRegExp = new RegExp(['1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\\-)|',
+      'ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\\-m|r |s )|',
+      'avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\\-(n|u)|c55\\/|capi|ccwa|cdm\\-|',
+      'cell|chtm|cldc|cmd\\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\\-s|devi|dica|dmob|do(c|p)o|',
+      'ds(12|\\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\\-|_)|',
+      'g1 u|g560|gene|gf\\-5|g\\-mo|go(\\.w|od)|gr(ad|un)|haie|hcit|hd\\-(m|p|t)|hei\\-|',
+      'hi(pt|ta)|hp( i|ip)|hs\\-c|ht(c(\\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\\-(20|go|ma)|',
+      'i230|iac( |\\-|\\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|',
+      'kddi|keji|kgt( |\\/)|klon|kpt |kwc\\-|kyo(c|k)|le(no|xi)|lg( g|\\/(k|l|u)|50|54|\\-[a-w])',
+      '|libw|lynx|m1\\-w|m3ga|m50\\/|ma(te|ui|xo)|mc(01|21|ca)|m\\-cr|me(rc|ri)|mi(o8|oa|ts)|',
+      'mmef|mo(01|02|bi|de|do|t(\\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|',
+      'n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|',
+      'op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\\-2|',
+      'po(ck|rt|se)|prox|psio|pt\\-g|qa\\-a|qc(07|12|21|32|60|\\-[2-7]|i\\-)|qtek|r380|r600|',
+      'raks|rim9|ro(ve|zo)|s55\\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\\-|oo|p\\-)|sdk\\/|',
+      'se(c(\\-|0|1)|47|mc|nd|ri)|sgh\\-|shar|sie(\\-|m)|k\\-0|sl(45|id)|sm(al|ar|b3|it|t5)|',
+      'so(ft|ny)|sp(01|h\\-|v\\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\\-|tdg\\-|',
+      'tel(i|m)|tim\\-|t\\-mo|to(pl|sh)|ts(70|m\\-|m3|m5)|tx\\-9|up(\\.b|g1|si)|utst|v400|v750|',
+      'veri|vi(rg|te)|vk(40|5[0-3]|\\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|',
+      'w3c(\\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\\-|your|zeto|zte\\-'].join(''), 'i');
+
+    var Detector = /** @class */ (function () {
+      function Detector(userAgent, navigator, process) {
+        this.navigator = navigator;
+        this.process = process;
+        this.userAgent = userAgent
+          ? userAgent
+          : this.navigator ? (navigator.userAgent || navigator.vendor) : '';
+      }
+      Detector.prototype.detect = function () {
+        if (this.process && !this.userAgent) {
+          var version = this.process.version.slice(1).split('.').slice(0, 3);
+          var versionTail = Array.prototype.slice.call(version, 1).join('') || '0';
+          return {
+            name: 'node',
+            version: version.join('.'),
+            versionNumber: parseFloat(version[0] + "." + versionTail),
+            mobile: false,
+            os: this.process.platform
+          };
+        }
+        if (!this.userAgent)
+          this.handleMissingError();
+        return __assign({}, this.checkBrowser(), this.checkMobile(), this.checkOs());
+      };
+      Detector.prototype.checkBrowser = function () {
+        var _this = this;
+        return browsers
+          .filter(function (definition) { return definition[1].test(_this.userAgent); })
+          .map(function (definition) {
+            var match = definition[1].exec(_this.userAgent);
+            var version = match && match[1].split(/[._]/).slice(0, 3);
+            var versionTails = Array.prototype.slice.call(version, 1).join('') || '0';
+            if (version && version.length < 3)
+              Array.prototype.push.apply(version, version.length === 1 ? [0, 0] : [0]);
+            return {
+              name: String(definition[0]),
+              version: version.join('.'),
+              versionNumber: Number(version[0] + "." + versionTails)
+            };
+          })
+          .shift();
+      };
+      Detector.prototype.checkMobile = function () {
+        var agentPrefix = this.userAgent.substr(0, 4);
+        var mobile = mobileRegExp.test(this.userAgent) || mobilePrefixRegExp.test(agentPrefix);
+        return { mobile: mobile };
+      };
+      Detector.prototype.checkOs = function () {
+        var _this = this;
+        return os
+          .map(function (definition) {
+            var name = definition.name || definition;
+            var pattern = _this.getOsPattern(definition);
+            return {
+              name: name,
+              pattern: pattern,
+              value: RegExp("\\b" + pattern.replace(/([ -])(?!$)/g, '$1?') + "(?:x?[\\d._]+|[ \\w.]*)", 'i').exec(_this.userAgent)
+            };
+          })
+          .filter(function (definition) { return definition.value; })
+          .map(function (definition) {
+            var os$$1 = definition.value[0] || '';
+            var osSuffix;
+            if (definition.pattern &&
+              definition.name &&
+              /^Win/i.test(os$$1) &&
+              !/^Windows Phone /i.test(os$$1) &&
+              (osSuffix = osVersions[os$$1.replace(/[^\d.]/g, '')]))
+              os$$1 = "Windows " + osSuffix;
+            if (definition.pattern && definition.name)
+              os$$1 = os$$1.replace(RegExp(definition.pattern, 'i'), definition.name);
+            os$$1 = os$$1
+              .replace(/ ce$/i, ' CE')
+              .replace(/\bhpw/i, 'web')
+              .replace(/\bMacintosh\b/, 'Mac OS')
+              .replace(/_PowerPC\b/i, ' OS')
+              .replace(/\b(OS X) [^ \d]+/i, '$1')
+              .replace(/\bMac (OS X)\b/, '$1')
+              .replace(/\/(\d)/, ' $1')
+              .replace(/_/g, '.')
+              .replace(/(?: BePC|[ .]*fc[ \d.]+)$/i, '')
+              .replace(/\bx86\.64\b/gi, 'x86_64')
+              .replace(/\b(Windows Phone) OS\b/, '$1')
+              .replace(/\b(Chrome OS \w+) [\d.]+\b/, '$1')
+              .split(' on ')[0]
+              .trim();
+            os$$1 = /^(?:webOS|i(?:OS|P))/.test(os$$1)
+              ? os$$1
+              : (os$$1.charAt(0).toUpperCase() + os$$1.slice(1));
+            return { os: os$$1 };
+          })
+          .shift();
+      };
+      Detector.prototype.getOsPattern = function (definition) {
+        var definitionInterface = definition;
+        return (typeof definition === 'string'
+          ? definition
+          : undefined) ||
+          definitionInterface.pattern ||
+          definitionInterface.name;
+      };
+      Detector.prototype.handleMissingError = function () {
+        throw new Error('Please give user-agent.\n> browser(navigator.userAgent or res.headers[\'user-agent\']).');
+      };
+      return Detector;
+    }());
+
+    function createCommonjsModule(fn, module) {
+      return module = { exports: {} }, fn(module, module.exports), module.exports;
+    }
+
+    var _global = createCommonjsModule(function (module) {
+      // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+      var global = module.exports = typeof window != 'undefined' && window.Math == Math
+        ? window : typeof self != 'undefined' && self.Math == Math ? self
+          // eslint-disable-next-line no-new-func
+          : Function('return this')();
+      if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
+    });
+
+    var _core = createCommonjsModule(function (module) {
+      var core = module.exports = { version: '2.5.7' };
+      if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
+    });
+    var _core_1 = _core.version;
+
+    var _isObject = function (it) {
+      return typeof it === 'object' ? it !== null : typeof it === 'function';
+    };
+
+    var _anObject = function (it) {
+      if (!_isObject(it)) throw TypeError(it + ' is not an object!');
+      return it;
+    };
+
+    var _fails = function (exec) {
+      try {
+        return !!exec();
+      } catch (e) {
+        return true;
+      }
+    };
+
+    // Thank's IE8 for his funny defineProperty
+    var _descriptors = !_fails(function () {
+      return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
+    });
+
+    var document = _global.document;
+    // typeof document.createElement is 'object' in old IE
+    var is = _isObject(document) && _isObject(document.createElement);
+    var _domCreate = function (it) {
+      return is ? document.createElement(it) : {};
+    };
+
+    var _ie8DomDefine = !_descriptors && !_fails(function () {
+      return Object.defineProperty(_domCreate('div'), 'a', { get: function () { return 7; } }).a != 7;
+    });
+
+    // 7.1.1 ToPrimitive(input [, PreferredType])
+
+    // instead of the ES6 spec version, we didn't implement @@toPrimitive case
+    // and the second argument - flag - preferred type is a string
+    var _toPrimitive = function (it, S) {
+      if (!_isObject(it)) return it;
+      var fn, val;
+      if (S && typeof (fn = it.toString) == 'function' && !_isObject(val = fn.call(it))) return val;
+      if (typeof (fn = it.valueOf) == 'function' && !_isObject(val = fn.call(it))) return val;
+      if (!S && typeof (fn = it.toString) == 'function' && !_isObject(val = fn.call(it))) return val;
+      throw TypeError("Can't convert object to primitive value");
+    };
+
+    var dP = Object.defineProperty;
+
+    var f = _descriptors ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+      _anObject(O);
+      P = _toPrimitive(P, true);
+      _anObject(Attributes);
+      if (_ie8DomDefine) try {
+        return dP(O, P, Attributes);
+      } catch (e) { /* empty */ }
+      if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
+      if ('value' in Attributes) O[P] = Attributes.value;
+      return O;
+    };
+
+    var _objectDp = {
+      f: f
+    };
+
+    var _propertyDesc = function (bitmap, value) {
+      return {
+        enumerable: !(bitmap & 1),
+        configurable: !(bitmap & 2),
+        writable: !(bitmap & 4),
+        value: value
+      };
+    };
+
+    var _hide = _descriptors ? function (object, key, value) {
+      return _objectDp.f(object, key, _propertyDesc(1, value));
+    } : function (object, key, value) {
+      object[key] = value;
+      return object;
+    };
+
+    var hasOwnProperty = {}.hasOwnProperty;
+    var _has = function (it, key) {
+      return hasOwnProperty.call(it, key);
+    };
+
+    var id = 0;
+    var px = Math.random();
+    var _uid = function (key) {
+      return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+    };
+
+    var _redefine = createCommonjsModule(function (module) {
+      var SRC = _uid('src');
+      var TO_STRING = 'toString';
+      var $toString = Function[TO_STRING];
+      var TPL = ('' + $toString).split(TO_STRING);
+
+      _core.inspectSource = function (it) {
+        return $toString.call(it);
+      };
+
+      (module.exports = function (O, key, val, safe) {
+        var isFunction = typeof val == 'function';
+        if (isFunction) _has(val, 'name') || _hide(val, 'name', key);
+        if (O[key] === val) return;
+        if (isFunction) _has(val, SRC) || _hide(val, SRC, O[key] ? '' + O[key] : TPL.join(String(key)));
+        if (O === _global) {
+          O[key] = val;
+        } else if (!safe) {
+          delete O[key];
+          _hide(O, key, val);
+        } else if (O[key]) {
+          O[key] = val;
+        } else {
+          _hide(O, key, val);
+        }
+        // add fake Function#toString for correct work wrapped methods / constructors with methods like LoDash isNative
+      })(Function.prototype, TO_STRING, function toString() {
+        return typeof this == 'function' && this[SRC] || $toString.call(this);
+      });
+    });
+
+    var _aFunction = function (it) {
+      if (typeof it != 'function') throw TypeError(it + ' is not a function!');
+      return it;
+    };
+
+    // optional / simple context binding
+
+    var _ctx = function (fn, that, length) {
+      _aFunction(fn);
+      if (that === undefined) return fn;
+      switch (length) {
+        case 1: return function (a) {
+          return fn.call(that, a);
+        };
+        case 2: return function (a, b) {
+          return fn.call(that, a, b);
+        };
+        case 3: return function (a, b, c) {
+          return fn.call(that, a, b, c);
+        };
+      }
+      return function (/* ...args */) {
+        return fn.apply(that, arguments);
+      };
+    };
+
+    var PROTOTYPE = 'prototype';
+
+    var $export = function (type, name, source) {
+      var IS_FORCED = type & $export.F;
+      var IS_GLOBAL = type & $export.G;
+      var IS_STATIC = type & $export.S;
+      var IS_PROTO = type & $export.P;
+      var IS_BIND = type & $export.B;
+      var target = IS_GLOBAL ? _global : IS_STATIC ? _global[name] || (_global[name] = {}) : (_global[name] || {})[PROTOTYPE];
+      var exports = IS_GLOBAL ? _core : _core[name] || (_core[name] = {});
+      var expProto = exports[PROTOTYPE] || (exports[PROTOTYPE] = {});
+      var key, own, out, exp;
+      if (IS_GLOBAL) source = name;
+      for (key in source) {
+        // contains in native
+        own = !IS_FORCED && target && target[key] !== undefined;
+        // export native or passed
+        out = (own ? target : source)[key];
+        // bind timers to global for call from export context
+        exp = IS_BIND && own ? _ctx(out, _global) : IS_PROTO && typeof out == 'function' ? _ctx(Function.call, out) : out;
+        // extend global
+        if (target) _redefine(target, key, out, type & $export.U);
+        // export
+        if (exports[key] != out) _hide(exports, key, exp);
+        if (IS_PROTO && expProto[key] != out) expProto[key] = out;
+      }
+    };
+    _global.core = _core;
+    // type bitmap
+    $export.F = 1;   // forced
+    $export.G = 2;   // global
+    $export.S = 4;   // static
+    $export.P = 8;   // proto
+    $export.B = 16;  // bind
+    $export.W = 32;  // wrap
+    $export.U = 64;  // safe
+    $export.R = 128; // real proto method for `library`
+    var _export = $export;
+
+    var toString = {}.toString;
+
+    var _cof = function (it) {
+      return toString.call(it).slice(8, -1);
+    };
+
+    // fallback for non-array-like ES3 and non-enumerable old V8 strings
+
+    // eslint-disable-next-line no-prototype-builtins
+    var _iobject = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
+      return _cof(it) == 'String' ? it.split('') : Object(it);
+    };
+
+    // 7.2.1 RequireObjectCoercible(argument)
+    var _defined = function (it) {
+      if (it == undefined) throw TypeError("Can't call method on  " + it);
+      return it;
+    };
+
+    // 7.1.13 ToObject(argument)
+
+    var _toObject = function (it) {
+      return Object(_defined(it));
+    };
+
+    // 7.1.4 ToInteger
+    var ceil = Math.ceil;
+    var floor = Math.floor;
+    var _toInteger = function (it) {
+      return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
+    };
+
+    // 7.1.15 ToLength
+
+    var min = Math.min;
+    var _toLength = function (it) {
+      return it > 0 ? min(_toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
+    };
+
+    // 7.2.2 IsArray(argument)
+
+    var _isArray = Array.isArray || function isArray(arg) {
+      return _cof(arg) == 'Array';
+    };
+
+    var _shared = createCommonjsModule(function (module) {
+      var SHARED = '__core-js_shared__';
+      var store = _global[SHARED] || (_global[SHARED] = {});
+
+      (module.exports = function (key, value) {
+        return store[key] || (store[key] = value !== undefined ? value : {});
+      })('versions', []).push({
+        version: _core.version,
+        mode: 'global',
+        copyright: '© 2018 Denis Pushkarev (zloirock.ru)'
+      });
+    });
+
+    var _wks = createCommonjsModule(function (module) {
+      var store = _shared('wks');
+
+      var Symbol = _global.Symbol;
+      var USE_SYMBOL = typeof Symbol == 'function';
+
+      var $exports = module.exports = function (name) {
+        return store[name] || (store[name] =
+          USE_SYMBOL && Symbol[name] || (USE_SYMBOL ? Symbol : _uid)('Symbol.' + name));
+      };
+
+      $exports.store = store;
+    });
+
+    var SPECIES = _wks('species');
+
+    var _arraySpeciesConstructor = function (original) {
+      var C;
+      if (_isArray(original)) {
+        C = original.constructor;
+        // cross-realm fallback
+        if (typeof C == 'function' && (C === Array || _isArray(C.prototype))) C = undefined;
+        if (_isObject(C)) {
+          C = C[SPECIES];
+          if (C === null) C = undefined;
+        }
+      } return C === undefined ? Array : C;
+    };
+
+    // 9.4.2.3 ArraySpeciesCreate(originalArray, length)
+
+
+    var _arraySpeciesCreate = function (original, length) {
+      return new (_arraySpeciesConstructor(original))(length);
+    };
+
+    // 0 -> Array#forEach
+    // 1 -> Array#map
+    // 2 -> Array#filter
+    // 3 -> Array#some
+    // 4 -> Array#every
+    // 5 -> Array#find
+    // 6 -> Array#findIndex
+
+
+
+
+
+    var _arrayMethods = function (TYPE, $create) {
+      var IS_MAP = TYPE == 1;
+      var IS_FILTER = TYPE == 2;
+      var IS_SOME = TYPE == 3;
+      var IS_EVERY = TYPE == 4;
+      var IS_FIND_INDEX = TYPE == 6;
+      var NO_HOLES = TYPE == 5 || IS_FIND_INDEX;
+      var create = $create || _arraySpeciesCreate;
+      return function ($this, callbackfn, that) {
+        var O = _toObject($this);
+        var self = _iobject(O);
+        var f = _ctx(callbackfn, that, 3);
+        var length = _toLength(self.length);
+        var index = 0;
+        var result = IS_MAP ? create($this, length) : IS_FILTER ? create($this, 0) : undefined;
+        var val, res;
+        for (;length > index; index++) if (NO_HOLES || index in self) {
+          val = self[index];
+          res = f(val, index, O);
+          if (TYPE) {
+            if (IS_MAP) result[index] = res;   // map
+            else if (res) switch (TYPE) {
+              case 3: return true;             // some
+              case 5: return val;              // find
+              case 6: return index;            // findIndex
+              case 2: result.push(val);        // filter
+            } else if (IS_EVERY) return false; // every
+          }
+        }
+        return IS_FIND_INDEX ? -1 : IS_SOME || IS_EVERY ? IS_EVERY : result;
+      };
+    };
+
+    var _strictMethod = function (method, arg) {
+      return !!method && _fails(function () {
+        // eslint-disable-next-line no-useless-call
+        arg ? method.call(null, function () { /* empty */ }, 1) : method.call(null);
+      });
+    };
+
+    var $filter = _arrayMethods(2);
+
+    _export(_export.P + _export.F * !_strictMethod([].filter, true), 'Array', {
+      // 22.1.3.7 / 15.4.4.20 Array.prototype.filter(callbackfn [, thisArg])
+      filter: function filter(callbackfn /* , thisArg */) {
+        return $filter(this, callbackfn, arguments[1]);
+      }
+    });
+
+    var filter = _core.Array.filter;
+
+    var $map = _arrayMethods(1);
+
+    _export(_export.P + _export.F * !_strictMethod([].map, true), 'Array', {
+      // 22.1.3.15 / 15.4.4.19 Array.prototype.map(callbackfn [, thisArg])
+      map: function map(callbackfn /* , thisArg */) {
+        return $map(this, callbackfn, arguments[1]);
+      }
+    });
+
+    var map = _core.Array.map;
+
+    var _stringWs = '\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003' +
+      '\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
+
+    var space = '[' + _stringWs + ']';
+    var non = '\u200b\u0085';
+    var ltrim = RegExp('^' + space + space + '*');
+    var rtrim = RegExp(space + space + '*$');
+
+    var exporter = function (KEY, exec, ALIAS) {
+      var exp = {};
+      var FORCE = _fails(function () {
+        return !!_stringWs[KEY]() || non[KEY]() != non;
+      });
+      var fn = exp[KEY] = FORCE ? exec(trim) : _stringWs[KEY];
+      if (ALIAS) exp[ALIAS] = fn;
+      _export(_export.P + _export.F * FORCE, 'String', exp);
+    };
+
+    // 1 -> String#trimLeft
+    // 2 -> String#trimRight
+    // 3 -> String#trim
+    var trim = exporter.trim = function (string, TYPE) {
+      string = String(_defined(string));
+      if (TYPE & 1) string = string.replace(ltrim, '');
+      if (TYPE & 2) string = string.replace(rtrim, '');
+      return string;
+    };
+
+    var _stringTrim = exporter;
+
+    // 21.1.3.25 String.prototype.trim()
+    _stringTrim('trim', function ($trim) {
+      return function trim() {
+        return $trim(this, 3);
+      };
+    });
+
+    var trim$1 = _core.String.trim;
+
+    var injectableNavigator = typeof window !== 'undefined'
+      ? window.navigator
+      : undefined;
+    var injectableProcess = typeof process !== 'undefined'
+      ? process
+      : undefined;
+    function browserDetect (userAgent) {
+      var detector = new Detector(userAgent, injectableNavigator, injectableProcess);
+      return detector.detect();
+    }
+
+    return browserDetect;
+
+  })));
+</script>
+<script>
+  var browser = browserDetect();
+  // alert(JSON.stringify(browser))
+  var CAPABILITY = {
+    UNRECOGNIZED: -1,
+    FULL: 0,
+    PARTIAL: 1,
+    UNSUPPORTED: 2
+  }
+
+  function validateBrowser() {
+    if (browser.name === 'ie') {
+      if (browser.versionNumber === 11) {
+        return CAPABILITY.PARTIAL
+      } else {
+        return CAPABILITY.UNSUPPORTED
+      }
+    } else if (browser.name === "firefox") {
+      if (browser.versionNumber >= 27 && browser.versionNumber < 41) {
+        return CAPABILITY.PARTIAL
+      } else if (browser.versionNumber > 41) {
+        return CAPABILITY.FULL
+      } else {
+        return CAPABILITY.UNSUPPORTED
+      }
+    } else if (browser.name === 'edge') {
+      if (browser.versionNumber >= 12 && browser.versionNumber < 18) {
+        return CAPABILITY.PARTIAL
+      } else if (browser.versionNumber > 18) {
+        return CAPABILITY.FULL
+      } else {
+        return CAPABILITY.UNSUPPORTED
+      }
+    } else if (browser.name === 'chrome' || browser.name === 'crios') {
+      if (browser.versionNumber >= 31 && browser.versionNumber < 63) {
+        return CAPABILITY.PARTIAL
+      } else if (browser.versionNumber >= 63) {
+        return CAPABILITY.FULL
+      } else {
+        return CAPABILITY.UNSUPPORTED
+      }
+    } else if (browser.name === 'opera') {
+      if (browser.versionNumber >= 20 && browser.versionNumber < 50) {
+        return CAPABILITY.PARTIAL
+      } else if (browser.versionNumber >= 50) {
+        return CAPABILITY.FULL
+      } else {
+        return CAPABILITY.UNSUPPORTED
+      }
+    } else if (browser.name === 'safari') {
+      if (browser.versionNumber >= 9 && browser.versionNumber < 11) {
+        return CAPABILITY.PARTIAL
+      } else if (browser.versionNumber >= 11) {
+        return CAPABILITY.FULL
+      } else {
+        return CAPABILITY.UNSUPPORTED
+      }
+    } else if (browser.name === 'android') {
+      if (browser.versionNumber >= 4.42 && browser.versionNumber < 6) {
+        return CAPABILITY.PARTIAL
+      } else if (browser.versionNumber >= 6) {
+        return CAPABILITY.FULL
+      } else {
+        return CAPABILITY.UNSUPPORTED
+      }
+    } else {
+      return CAPABILITY.PARTIAL
+    }
+  }
+
+  function getBrowserByName(name) {
+    var message;
+    switch (name) {
+      case "ie":
+        message = "IE 浏览器";
+        break;
+      case "firefox":
+        message = "FireFox 浏览器";
+        break;
+      case "edge":
+        message = "Edge 浏览器";
+        break;
+      case "chrome":
+      case "crios":
+        message = "Chrome 浏览器";
+        break;
+      case "opera":
+        message = "Opera 浏览器";
+        break;
+      case "safari":
+        message = "iOS 系统";
+        break;
+      case "android":
+        message = "Android 系统";
+        break;
+    }
+    return message + ' <small>(ver ' + browser.version + ')</small>';
+  }
+
+  switch (validateBrowser()) {
+    case CAPABILITY.FULL:
+      document.getElementById("supportDetectionSupported").style.display = "block";
+      document.body.className += "success"
+      setTimeout(function() {
+        document.getElementById("noResponseAnchor").style.display = "block"
+      }, 5000);
+      // go('https');
+      break;
+    case CAPABILITY.PARTIAL:
+      document.getElementById("supportDetectionPartialSupported").style.display = "block";
+      document.body.className += " warning"
+      document.getElementById("rBrowserVersionWarning").innerHTML = getBrowserByName(browser.name)
+      break;
+    case CAPABILITY.UNSUPPORTED:
+      document.getElementById("supportDetectionUnsupported").style.display = "block";
+      document.body.className += "danger"
+      document.getElementById("rBrowserVersionDanger").innerHTML = getBrowserByName(browser.name)
+      break;
+    case CAPABILITY.UNRECOGNIZED:
+      if (confirm("【错误】无法识别浏览器信息。\n\n【确认】：直接进入网站\n【取消】：使用谷歌 Chrome 浏览器")) {
+        go('https')
+      } else {
+        go('chrome')
+      }
+  }
+
+</script>
+</body>
+</html>

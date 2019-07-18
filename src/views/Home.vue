@@ -1,8 +1,8 @@
 <template>
   <section>
     <HeroVideo
-      heading="FloatDream"
-      subheading="一个很骚的服务器"
+      heading="一梦千年"
+      subheading="subheading"
     />
   </section>
 </template>

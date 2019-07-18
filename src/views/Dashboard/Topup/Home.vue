@@ -34,7 +34,7 @@
                     <v-text-field
                       v-model="price"
                       label="金额"
-                      prepend-icon="attach_money"
+                      prepend-icon="mdi-currency-cny"
                       required
                       persistent-hint
                       :hint="getPriceHint()"
@@ -58,7 +58,7 @@
                 @click="stepNow = 2"
               >
                 下一步
-                <v-icon right>chevron_right</v-icon>
+                <v-icon right>mdi-chevron-right</v-icon>
               </v-btn>
               <v-slide-x-reverse-transition>
                 <v-card class="ml-1 mt-4 right indigo font-weight-bold white--text" elevation="4" dense
@@ -89,7 +89,7 @@
                   <v-list>
                     <v-list-tile>
                       <v-list-tile-action>
-                        <v-icon color="indigo">account_circle</v-icon>
+                        <v-icon color="indigo">mdi-account-circle</v-icon>
                       </v-list-tile-action>
 
                       <v-list-tile-content>
@@ -109,7 +109,7 @@
                   <v-list>
                     <v-list-tile>
                       <v-list-tile-action>
-                        <v-icon color="indigo">attach_money</v-icon>
+                        <v-icon color="indigo">mdi-currency-cny</v-icon>
                       </v-list-tile-action>
 
                       <v-list-tile-content>
@@ -128,7 +128,7 @@
                 @click="stepNow = 3"
               >
                 确认
-                <v-icon right>done</v-icon>
+                <v-icon right>mdi-done</v-icon>
               </v-btn>
             </v-stepper-content>
 
@@ -149,13 +149,13 @@
                     <v-list-tile-title>{{ method.name }}</v-list-tile-title>
                     <v-list-tile-sub-title>
                       <span v-if="isDisabledMethod(method)">
-                        <v-icon size="medium">close</v-icon> 暂不支持手机端{{method.name}}，请在电脑端操作
+                        <v-icon size="medium">mdi-close</v-icon> 暂不支持手机端{{method.name}}，请在电脑端操作
                       </span>
                       <span v-else-if="$vuetify.breakpoint.xsOnly">
-                        <v-icon size="medium">exit_to_app</v-icon> 跳转 {{method.app}} APP 进行支付
+                        <v-icon size="medium">mdi-exit-to-app</v-icon> 跳转 {{method.app}} APP 进行支付
                       </span>
                       <span v-else>
-                        <v-icon size="medium">center_focus_weak</v-icon> 扫描二维码进行支付
+                        <v-icon size="medium">mdi-center-focus-weak</v-icon> 扫描二维码进行支付
                       </span>
                     </v-list-tile-sub-title>
                   </v-list-tile-content>
@@ -230,8 +230,6 @@
   import {validationMixin} from 'vuelidate'
   import {required, integer, between} from 'vuelidate/lib/validators'
   import topup from '@/api/topup'
-
-  const positive = (value) => value > 0;
 
   export default {
     name: "TopupHome",

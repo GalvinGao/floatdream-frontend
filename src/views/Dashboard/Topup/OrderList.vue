@@ -269,7 +269,7 @@
               color: obj.paid ? obj.processed ? "success" : "warning" : "secondary",
               icon: obj.paid ? obj.processed ? "mdi-check" : "mdi-dots-horizontal" : "mdi-progress-clock",
               text: obj.paid ? obj.processed ? "已充值" : "正在充值" : "等待付款",
-              details: obj.paid ? obj.processed ? "款项已成功充值到对应账户，请查收" : "已收到付款信息，系统正在处理" : `暂未付款；订单将于${this.$moment(obj.created_at).add(2, 'hours').fromNow()}关闭`,
+              details: obj.paid ? obj.processed ? "款项已成功充值到对应账户，请查收" : "已收到付款信息，系统正在处理" : `暂未付款；订单将于 ${this.$moment(obj.created_at).add(2, 'hours').fromNow()}关闭`,
             };
             obj.closed = false;
           }

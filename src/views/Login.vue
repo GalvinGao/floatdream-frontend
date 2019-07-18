@@ -1,6 +1,5 @@
 <template>
   <v-layout justify-center align-center fill-height style="overflow: hidden">
-    <div id="login-page--background"></div>
     <v-snackbar v-model="snackbar.enabled" :color="snackbar.color" :timeout="10000">
       {{ snackbar.text }}
       <v-btn
@@ -12,11 +11,11 @@
       </v-btn>
     </v-snackbar>
     <v-flex xs12 sm10 md8 lg6>
-      <v-card class="transparent pa-3" id="login-page--card" elevation="12">
+      <v-card class="pa-3" id="login-page--card" elevation="12" style="background: rgba(0, 0, 0, .75)">
         <v-alert
           :value="this.reasonMessage"
           type="info"
-          class="mb-3"
+          class="mb-1"
         >
           {{ this.reasonMessage }}
         </v-alert>
@@ -24,7 +23,7 @@
         <v-form ref="form" lazy-validation @keyup.native.enter="executeCaptcha" class="form">
           <v-container>
             <v-layout column>
-              <h1 style="z-index: 2" class="mb-5 white--text">登录</h1>
+              <h1 class="mb-4 white--text">登录</h1>
               <v-text-field
                 v-model.trim="username"
                 :error-messages="usernameErrors"
@@ -192,40 +191,6 @@
 
   }
 </script>
-
-<style scoped>
-  #login-page--background {
-    background: radial-gradient(ellipse at center, #5989df 0%, #1c1c36 100%);
-    background: url('../assets/background/2.jpg') 0 0 / cover fixed;
-    -webkit-background-size: auto 100%;
-    background-size: auto 100%;
-
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    height: 100vh;
-    width: 100vw;
-  }
-
-  #login-page--card::before {
-    background: url('../assets/background/2.jpg') 0 0 / cover fixed;
-    content: '';
-    margin: 0px;
-    position: absolute;
-    top: -48px;
-    right: -48px;
-    bottom: -48px;
-    left: -48px;
-    filter: blur(20px) saturate(.75);
-    z-index: 0;
-  }
-
-  .form {
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, .3);
-  }
-</style>
 
 <style>
   .grecaptcha-badge {

@@ -2,19 +2,47 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit"/>
+    <meta name="force-rendering" content="webkit"/>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>FloatDream</title>
+    <title>一梦千年</title>
+    <script>
+      // Somebody needs to update their browser
+      try {
+        var _lastCompatibilityCheckedAt;
+        var _timeThreshold = 1000 * 60 * 60 * 24 * 365;
+        if (window.localStorage) {
+          _lastCompatibilityCheckedAt = parseInt(window.localStorage.getItem("browserCompatibilityCheckedAt"))
+        } else {
+          _lastCompatibilityCheckedAt = parseInt(decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + "browserCompatibilityCheckedAt" + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1"))) || null;
+        }
+        if (!_lastCompatibilityCheckedAt || new Date().getTime() > (_lastCompatibilityCheckedAt + _timeThreshold)) {
+          location.replace("/_checkBrowser")
+        }
+      } catch (e) {
+        location.replace("/_checkBrowser")
+      }
+    </script>
+
+    <!-- 使用 Polyfill 尝试修复 IE 错版问题 (仅于 IE 9+ 可用) -->
     <!--[if IE]>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser-polyfill.min.js"></script>
     <![endif]-->
-    <link rel="stylesheet" href="https://fonts.proxy.ustclug.org/css?family=Material+Icons|Noto+Sans+SC|Noto+Serif+SC:300,700|Roboto:300&display=swap">
+
+    <link rel="stylesheet" href="https://fonts.proxy.ustclug.org/css?family=Noto+Sans+SC:400|ZCOOL+XiaoWei:400,600|Roboto:400&display=swap">
   </head>
   <body>
+
     <noscript>
-      <div style="background: #cc696f; color: #000; font-weight: 700; font-family: Noto Sans SC, serif; border: 1px solid #633235; margin: 48px; padding: 24px;">
-        <strong>很抱歉，但 FloatDream 官网需要您启用 JavaScript 以提供完整支持。如需帮助，请联系服务器管理员。</strong>
+      <div style="background: #cc696f; color: #000; font-weight: 700; font-size: 18px; font-family: Noto Sans SC, serif; border: 1px solid #633235; margin: 48px; padding: 24px; word-break: break-all; text-align: center;">
+        <p>很抱歉，但一梦千年官网需要您启用 JavaScript 以提供完整支持。如需帮助，请联系服务器管理员。</p>
+        <details>
+          <summary style="font-size: 12px; cursor: pointer">高级信息</summary>
+          <p style="border: 1px solid #633235; margin: 48px; padding: 16px;">本网站使用了 Vue.js - 一个 MVC 网站框架 - 进行开发，其使用了 JavaScript 来生成、渲染页面，因此禁用 JavaScript 将会导致此网站完全不工作。若您因其他原因确实无法使用 JavaScript，请联系服务器管理员并说明原因，我们将为您提供人工服务，感谢配合</p>
+          <p style="font-size: 12px;">开发人员使用：显示本消息的原因：<code>触发了 &lt;noscript&gt;</code></p>
+        </details>
       </div>
     </noscript>
     <div id="app"></div>

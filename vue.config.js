@@ -1,3 +1,6 @@
 module.exports = {
-  // publicPath: "/static"
+  // publicPath: "/static",
+  assetsDir: 'assets',
+  integrity: true,
+
 }

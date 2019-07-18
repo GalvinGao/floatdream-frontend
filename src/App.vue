@@ -23,7 +23,7 @@
       <v-list>
         <v-list-tile :to="{'name': 'Home'}">
           <v-list-tile-action>
-            <v-icon>home</v-icon>
+            <v-icon>mdi-home</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>首页</v-list-tile-title>
@@ -41,10 +41,10 @@
 
         <v-list-tile :to="{'name': 'Forum'}">
           <v-list-tile-action>
-            <v-icon>forum</v-icon>
+            <v-icon>mdi-forum</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>论坛 &nbsp;<v-icon small>open_in_new</v-icon>
+            <v-list-tile-title>论坛 &nbsp;<v-icon small>mdi-open-in-new</v-icon>
             </v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
@@ -59,7 +59,7 @@
         </v-list-tile>
 
         <v-list-group
-          prepend-icon="account_circle"
+          prepend-icon="mdi-account-circle"
         >
           <template v-slot:activator>
             <v-list-tile>
@@ -75,7 +75,7 @@
             </v-list-tile-content>
 
             <v-list-tile-action>
-              <v-icon>dashboard</v-icon>
+              <v-icon>mdi-dashboard</v-icon>
             </v-list-tile-action>
           </v-list-tile>
 
@@ -84,7 +84,7 @@
               <v-list-tile-title>充值</v-list-tile-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-icon>favorite_border</v-icon>
+              <v-icon>mdi-favorite-border</v-icon>
             </v-list-tile-action>
           </v-list-tile>
 
@@ -93,7 +93,7 @@
               <v-list-tile-title>皮肤站</v-list-tile-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-icon>face</v-icon>
+              <v-icon>mdi-face</v-icon>
             </v-list-tile-action>
           </v-list-tile>
 
@@ -127,7 +127,7 @@
             style="overflow: hidden"
             round
           >
-            <v-icon left>logout</v-icon> 退出登录
+            <v-icon left>mdi-logout</v-icon> 退出登录
           </v-btn>
           <v-chip v-else class="mr-2" style="box-shadow: 0 0 0 4px rgba(0, 0, 0, .3)">
             <v-avatar class="deep-purple">{{this.$store.state.auth.username.slice(0, 1) || ''}}</v-avatar>
@@ -136,7 +136,7 @@
         </transition>
       </span>
       <span v-else>
-        <v-btn round @click="redirectLogin"><v-icon left>exit_to_app</v-icon> 登录</v-btn>
+        <v-btn round @click="redirectLogin"><v-icon left>mdi-exit-to-app</v-icon> 登录</v-btn>
       </span>
 
     </v-toolbar>
@@ -231,12 +231,12 @@
 
 <style>
   .font-serif, h1, h2, h3, h4, h5, h6 {
-    font-family: 'Noto Serif SC', serif;
+    font-family: 'ZCOOL XiaoWei', cursive;
   }
 
   .font-serif-bold {
-    font-family: 'Noto Serif SC', serif;
-    font-weight: 700;
+    font-family: 'ZCOOL XiaoWei', cursive;
+    font-weight: 600;
   }
 
   .default-transition-enter-active {

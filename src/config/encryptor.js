@@ -1,3 +1,0 @@
-export default {
-  publicKey: "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCibDtu+ejj9q1D+eGNhXFHZLNJ\nxXoXqnaowMFdA3tIFMoUD+8nWcRwpXuoMx/C+dxDVGa7reOS+NU1psMgtn1v/9rF\n4R/J1qVZltJDNiVNiYsnx6bQassBI6bcSZ7d38u9shv7lf1qFpCGHsUJZF0sVSJl\nYDz73GzUojYwuJQdZQIDAQAB\n-----END PUBLIC KEY-----\n"
-}

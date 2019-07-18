@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "deploy": "vue-cli-service build && rm -rf ~/go/src/github.com/GalvinGao/floatdream-backend/ui && cp -r dist/ ~/go/src/github.com/GalvinGao/floatdream-backend/ui"
+    "deploy": "vue-cli-service build && rm -rf $(go env GOPATH)/src/github.com/GalvinGao/floatdream-backend/ui && cp -r dist/ $(go env GOPATH)/src//github.com/GalvinGao/floatdream-backend/ui"
   },
   "dependencies": {
     "@chenfengyuan/vue-qrcode": "^1.0.1",
@@ -16,8 +16,6 @@
     "axios": "^0.19.0",
     "axios-mock-adapter": "^1.16.0",
     "core-js": "^2.6.5",
-    "cryptico": "^1.0.2",
-    "jsencrypt": "^3.0.0-rc.1",
     "moment": "^2.24.0",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.4",
@@ -63,7 +61,10 @@
     }
   },
   "browserslist": [
-    "> 1%",
-    "last 2 versions"
+    ">0.5% in cn",
+    "last 2 versions",
+    "cover 80% in cn",
+    "not ie 10",
+    "safari > 9"
   ]
 }
